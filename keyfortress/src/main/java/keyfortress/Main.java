@@ -1,11 +1,11 @@
 package keyfortress;
 
-import keyfortress.ui.Login;
+import keyfortress.ui.LoginForm;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Login login = new Login();
-		login.launch(Login.class, args);
+		LoginForm login = new LoginForm();
+		login.launch(LoginForm.class, args);
 	}
 }
