@@ -1,17 +1,20 @@
 package keyfortress.domain.entities;
 
+import java.util.List;
 import java.util.UUID;
 
+import keyfortress.domain.valueObjects.AccountPassword;
 import keyfortress.domain.valueObjects.KeystorePassword;
 
 public class User {
 
-	private final UUID id;
+	private final UUID userID;
 	private String name;
-	private KeystorePassword password;
+	private AccountPassword password;
+	private List<Keystore> keystores;
 
-	public User(String name, KeystorePassword password) {
-		this.id = UUID.randomUUID();
+	public User(String name, AccountPassword password) {
+		this.userID = UUID.randomUUID();
 		this.name = name;
 		this.password = password;
 	}
@@ -24,15 +27,23 @@ public class User {
 		this.name = name;
 	}
 
-	public KeystorePassword getPassword() {
+	public AccountPassword getPassword() {
 		return password;
 	}
 
-	public void setPassword(KeystorePassword password) {
+	public void setPassword(AccountPassword password) {
 		this.password = password;
 	}
 
 	public UUID getId() {
-		return id;
+		return userID;
+	}
+
+	public List<Keystore> getKeystores() {
+		return keystores;
+	}
+
+	public void setKeystores(List<Keystore> keystores) {
+		this.keystores = keystores;
 	}
 }

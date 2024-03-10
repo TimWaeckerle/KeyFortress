@@ -7,12 +7,12 @@ import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.services.EncryptionService;
 import keyfortress.domain.services.PasswordValidationService;
 
-public class PasswordEntries implements IPassword {
+public class PasswordEntry implements IPassword {
 
 	private byte[] password;
 	private byte[] salt;
 
-	public PasswordEntries(String password) throws PasswordValidationException {
+	public PasswordEntry(String password) throws PasswordValidationException {
 		if (PasswordValidationService.validate(password, 1, false, false)) {
 			this.salt = EncryptionService.generateSalt(saltSize);
 			this.password = EncryptionService.encryptPassword(password, salt);
@@ -48,7 +48,7 @@ public class PasswordEntries implements IPassword {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		PasswordEntries other = (PasswordEntries) obj;
+		PasswordEntry other = (PasswordEntry) obj;
 		return Arrays.equals(password, other.password) && Arrays.equals(salt, other.salt);
 	}
 }
