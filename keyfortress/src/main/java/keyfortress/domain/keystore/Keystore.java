@@ -1,9 +1,7 @@
-package keyfortress.domain.entities;
+package keyfortress.domain.keystore;
 
 import java.util.List;
 import java.util.UUID;
-
-import keyfortress.domain.valueObjects.KeystorePassword;
 
 public class Keystore {
 	private final UUID keystoreID;
@@ -39,5 +37,17 @@ public class Keystore {
 
 	public void addKeystoreEntry(KeystoreEntry keyEntries) {
 		KeyEntries.add(keyEntries);
+	}
+
+	public UUID getKeystoreID() {
+		return keystoreID;
+	}
+
+	public void addKeyEntrie(KeystoreEntry keyEntrie) {
+		KeyEntries.add(keyEntrie);
+	}
+	
+	public void removeKeyEntrie(KeystoreEntry keyEntrie) {
+		KeyEntries.remove(keyEntrie);
 	}
 }

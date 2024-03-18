@@ -1,4 +1,4 @@
-package keyfortress.domain.valueObjects;
+package keyfortress.domain.keystore;
 
 import java.util.Arrays;
 

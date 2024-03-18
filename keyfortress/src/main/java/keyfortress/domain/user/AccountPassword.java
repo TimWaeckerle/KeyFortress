@@ -1,34 +1,35 @@
-package keyfortress.domain.valueObjects;
+package keyfortress.domain.user;
 
 import java.util.Arrays;
 
 import keyfortress.ErrorMessages;
 import keyfortress.domain.exceptions.PasswordValidationException;
+import keyfortress.domain.keystore.IPassword;
 import keyfortress.domain.services.EncryptionService;
 import keyfortress.domain.services.PasswordValidationService;
 
-public final class KeystorePassword implements IPassword {
+public class AccountPassword implements IPassword {
 
-	private byte[] password;
-	private byte[] salt;
+	private final byte[] password;
+	private final byte[] salt;
 
-	public KeystorePassword(String password) throws PasswordValidationException {
-		if (PasswordValidationService.validate(password, 8, true, true)) {
+	public AccountPassword() {
+		this.password = null;
+		this.salt = null;
+	}
+
+	public AccountPassword(String password) throws PasswordValidationException {
+		if (PasswordValidationService.validate(password, 6, true, false)) {
 			this.salt = EncryptionService.generateSalt(saltSize);
 			this.password = EncryptionService.encryptPassword(password, salt);
 		} else {
-			throw new PasswordValidationException(ErrorMessages.KeyStorePasswordMessage.toString());
+			throw new PasswordValidationException(ErrorMessages.AccountPasswordMessage.getValue());
 		}
 	}
 
 	@Override
 	public byte[] getPassword() {
 		return password;
-	}
-
-	@Override
-	public String toString() {
-		return "KeystorePassword [password=" + Arrays.toString(password) + ", salt=" + Arrays.toString(salt) + "]";
 	}
 
 	@Override
@@ -48,8 +49,16 @@ public final class KeystorePassword implements IPassword {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KeystorePassword other = (KeystorePassword) obj;
+		AccountPassword other = (AccountPassword) obj;
 		return Arrays.equals(password, other.password) && Arrays.equals(salt, other.salt);
 	}
 
+	@Override
+	public String toString() {
+		return "AccountPassword [password=" + Arrays.toString(password) + ", salt=" + Arrays.toString(salt) + "]";
+	}
+
+	public byte[] getSalt() {
+		return salt;
+	}
 }

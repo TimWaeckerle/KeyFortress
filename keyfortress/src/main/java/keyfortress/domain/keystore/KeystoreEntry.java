@@ -1,6 +1,4 @@
-package keyfortress.domain.entities;
-
-import keyfortress.domain.valueObjects.PasswordEntry;
+package keyfortress.domain.keystore;
 
 public class KeystoreEntry {
 
