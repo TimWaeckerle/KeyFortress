@@ -1,11 +1,12 @@
 package keyfortress.domain.repositories;
 
 import java.util.List;
+import java.util.UUID;
 
 import keyfortress.domain.user.User;
 
 public interface UserRepository {
-	public User findUserByID(String userId);
+	public User findUserByID(UUID userId);
 
 	public void saveUser(User user);
 

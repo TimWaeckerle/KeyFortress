@@ -11,11 +11,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.repositories.FileSystemUserRepository;
 import keyfortress.domain.services.UserService;
 import keyfortress.domain.user.User;
 
 public class LoginForm extends Application {
+
+	UserService userService;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -30,8 +33,8 @@ public class LoginForm extends Application {
 		PasswordField passwordTextField = new PasswordField();
 
 		ColumnConstraints col1 = new ColumnConstraints();
-		col1.setPercentWidth(40);
 		ColumnConstraints col2 = new ColumnConstraints();
+		col1.setPercentWidth(40);
 		col2.setPercentWidth(30);
 		grid.getColumnConstraints().addAll(col1, col2);
 		grid.add(usernameLabel, 0, 0);
@@ -45,12 +48,19 @@ public class LoginForm extends Application {
 		loginButton.setOnAction(e -> {
 			String username = usernameTextField.getText();
 			String password = passwordTextField.getText();
-			UserService userService = new UserService(new FileSystemUserRepository());
+			userService = new UserService(new FileSystemUserRepository());
 
-			if (userService.authenticateUser(username, password)) {
-				loginUser(userService.getUserByName(username));
-			} else {
-				showAlert("Error on Login", "Wrong Username or Password. Please try again.");
+			try {
+				if (userService.authenticateUser(username, password)) {
+					loginUser(userService.getUserByName(username));
+					primaryStage.close();
+				} else {
+					showAlert("Error on Login", "Wrong Username or Password. Please try again."
+							+ " You also can create an account via the 'Register' button.");
+				}
+			} catch (PasswordValidationException e1) {
+				showAlert("Error on Login", "Wrong Username or Password. Please try again."
+						+ " You also can create an account via the 'Register' button.");
 			}
 		});
 
@@ -67,11 +77,11 @@ public class LoginForm extends Application {
 	}
 
 	private void loginUser(User user) {
-		Stage loggedInView = new Stage();
-		loggedInView.setTitle(user.getName());
-		KeyStoreOverviewForm keystoreForm = new KeyStoreOverviewForm();
-		keystoreForm.start(loggedInView);
-		loggedInView.show();
+		Stage keystoreOverview = new Stage();
+		keystoreOverview.setTitle(user.getName());
+		KeyStoreOverviewForm keystoreOverviewForm = new KeyStoreOverviewForm();
+		keystoreOverviewForm.start(keystoreOverview);
+		keystoreOverview.show();
 	}
 
 	private void startRegisterUi() {

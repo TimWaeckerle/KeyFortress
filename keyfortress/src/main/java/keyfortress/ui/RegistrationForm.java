@@ -1,7 +1,6 @@
 package keyfortress.ui;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -44,7 +43,7 @@ public class RegistrationForm extends Application {
 
 		registerButton.setOnAction(e -> {
 			createUser(usernameTextField.getText(), passwordTextField.getText());
-			Platform.exit();
+			primaryStage.close();
 		});
 
 		grid.add(registerButton, 0, 2);
@@ -57,12 +56,15 @@ public class RegistrationForm extends Application {
 	private void createUser(String username, String password) {
 		UserService userService = new UserService(new FileSystemUserRepository());
 		try {
-			userService.createUser(username, password);
+			if (!userService.createUser(username, password)) {
+				showAlert("Error", "User already exists. Choose another name");
+			} else {
+				showAlert("Information", "Account created successfully");
+			}
 		} catch (PasswordValidationException ex) {
 			showAlert("Error", ex.getMessage());
 			return;
 		}
-		showAlert("Information", "Account created successfully");
 	}
 
 	private void showAlert(String title, String message) {

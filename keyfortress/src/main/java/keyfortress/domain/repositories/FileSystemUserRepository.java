@@ -1,29 +1,45 @@
 package keyfortress.domain.repositories;
 
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import keyfortress.domain.user.User;
 
 public class FileSystemUserRepository implements UserRepository {
 
 	private final String filePath = "userdata.json";
-	private final ObjectMapper objectMapper;
+	private final Gson gson;
 
 	public FileSystemUserRepository() {
-		this.objectMapper = new ObjectMapper();
+		this.gson = new Gson();
 	}
 
 	@Override
 	public void saveUser(User user) {
 		List<User> users = findAll();
-		users.add(user);
+		boolean userExists = false;
+
+		for (int i = 0; i < users.size(); i++) {
+			if (users.get(i).getId().equals(user.getId())) {
+				users.set(i, user);
+				userExists = true;
+				break;
+			}
+		}
+
+		if (!userExists) {
+			users.add(user);
+		}
+
 		writeToFile(users);
 	}
 
@@ -34,8 +50,12 @@ public class FileSystemUserRepository implements UserRepository {
 				file.createNewFile();
 				return new ArrayList<>();
 			}
-			return objectMapper.readValue(file, new TypeReference<List<User>>() {
-			});
+			FileReader reader = new FileReader(filePath);
+			Type userListType = new TypeToken<ArrayList<User>>() {
+			}.getType();
+			List<User> users = gson.fromJson(reader, userListType);
+			reader.close();
+			return users != null ? users : new ArrayList<>();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return new ArrayList<>();
@@ -44,19 +64,19 @@ public class FileSystemUserRepository implements UserRepository {
 
 	private void writeToFile(List<User> users) {
 		try {
-			File file = new File(filePath);
-			objectMapper.writeValue(file, users);
+			FileWriter writer = new FileWriter(filePath);
+			gson.toJson(users, writer);
+			writer.close();
 		} catch (IOException e) {
 			// TODO
 		}
 	}
 
 	@Override
-	public User findUserByID(String userId) {
-
+	public User findUserByID(UUID userId) {
 		List<User> users = findAll();
 		for (User user : users) {
-			if (user.getId().toString().equals(userId)) {
+			if (user.getId().equals(userId)) {
 				return user;
 			}
 		}

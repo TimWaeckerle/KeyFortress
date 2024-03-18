@@ -1,6 +1,8 @@
 package keyfortress.domain.services;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.keystore.Keystore;
@@ -9,6 +11,8 @@ import keyfortress.domain.user.AccountPassword;
 import keyfortress.domain.user.User;
 
 public class UserService {
+
+	private static User loggedInUser;
 
 	private final FileSystemUserRepository userRepository;
 
@@ -24,7 +28,7 @@ public class UserService {
 		return userRepository.findAll();
 	}
 
-	public User getUserById(String userId) {
+	public User getUserById(UUID userId) {
 		return userRepository.findUserByID(userId);
 	}
 
@@ -40,7 +44,7 @@ public class UserService {
 		userRepository.delete(userId);
 	}
 
-	public List<Keystore> getAllKeystoresForUser(String userId) {
+	public List<Keystore> getAllKeystoresForUser(UUID userId) {
 		User user = userRepository.findUserByID(userId);
 		if (user != null) {
 			return user.getKeystores();
@@ -58,13 +62,36 @@ public class UserService {
 
 	}
 
-	public boolean authenticateUser(String username, String password) {
+	public boolean authenticateUser(String username, String password) throws PasswordValidationException {
 		User user = userRepository.findUserByUsername(username);
-		if (user != null && user.getPassword()
-				.equals(EncryptionService.encryptPassword(password, user.getPassword().getSalt()))) {
-			return true;
-		} else {
-			return false;
+
+		if (user != null) {
+			byte[] storedPasswordHash = user.getPassword().getPassword();
+			byte[] storedSalt = user.getPassword().getSalt();
+
+			byte[] enteredPasswordHash = EncryptionService.encryptPassword(password, storedSalt);
+
+			if (Arrays.equals(storedPasswordHash, enteredPasswordHash)) {
+				loggedInUser = user;
+				return true;
+			}
 		}
+		return false;
+	}
+
+	public Keystore getKeystoreByKeystoreID(UUID id) {
+
+		List<Keystore> keystores = getAllKeystoresForUser(loggedInUser.getId());
+
+		for (Keystore keystore : keystores) {
+			if (keystore.getKeystoreID().equals(id)) {
+				return keystore;
+			}
+		}
+		return null;
+	}
+
+	public User getLoggedInUser() {
+		return loggedInUser;
 	}
 }

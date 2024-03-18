@@ -13,11 +13,6 @@ public class AccountPassword implements IPassword {
 	private final byte[] password;
 	private final byte[] salt;
 
-	public AccountPassword() {
-		this.password = null;
-		this.salt = null;
-	}
-
 	public AccountPassword(String password) throws PasswordValidationException {
 		if (PasswordValidationService.validate(password, 6, true, false)) {
 			this.salt = EncryptionService.generateSalt(saltSize);

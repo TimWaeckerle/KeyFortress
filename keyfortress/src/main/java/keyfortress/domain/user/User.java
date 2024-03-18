@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import keyfortress.domain.keystore.Keystore;
@@ -21,8 +20,7 @@ public class User {
 		this.keystores = new ArrayList<>();
 	}
 
-	@JsonCreator
-	public User(@JsonProperty("name") String name, @JsonProperty("password") AccountPassword password) {
+	public User( String name, AccountPassword password) {
 		this.id = UUID.randomUUID();
 		this.name = name;
 		this.password = password;
@@ -32,7 +30,7 @@ public class User {
 	public String getName() {
 		return name;
 	}
-
+	
 	public void setName(String name) {
 		this.name = name;
 	}
