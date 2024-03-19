@@ -16,7 +16,7 @@ public class AccountPassword implements IPassword {
 	public AccountPassword(String password) throws PasswordValidationException {
 		if (PasswordValidationService.validate(password, 6, true, false)) {
 			this.salt = EncryptionService.generateSalt(saltSize);
-			this.password = EncryptionService.encryptPassword(password, salt);
+			this.password = EncryptionService.encryptPasswordPermanent(password, salt);
 		} else {
 			throw new PasswordValidationException(ErrorMessages.AccountPasswordMessage.getValue());
 		}

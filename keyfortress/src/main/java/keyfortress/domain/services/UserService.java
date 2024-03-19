@@ -73,7 +73,7 @@ public class UserService {
 			byte[] storedPasswordHash = user.getPassword().getPassword();
 			byte[] storedSalt = user.getPassword().getSalt();
 
-			byte[] enteredPasswordHash = EncryptionService.encryptPassword(password, storedSalt);
+			byte[] enteredPasswordHash = EncryptionService.encryptPasswordPermanent(password, storedSalt);
 
 			if (Arrays.equals(storedPasswordHash, enteredPasswordHash)) {
 				loggedInUser = user;

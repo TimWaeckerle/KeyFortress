@@ -13,7 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import keyfortress.domain.exceptions.PasswordValidationException;
+import keyfortress.domain.events.KeystoreEntryObservable;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
 import keyfortress.domain.keystore.PasswordEntry;
@@ -23,6 +23,7 @@ import keyfortress.domain.services.KeystoreService;
 public class AddKeystoreEntryForm extends Application {
 
 	private UUID keystoreID;
+	private KeystoreEntryObservable observable;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -58,12 +59,12 @@ public class AddKeystoreEntryForm extends Application {
 	private void addEntry(String name, String password) {
 		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 		try {
-			PasswordEntry passwordEntry = new PasswordEntry(password);
-			KeystoreEntry keystoreEntry = new KeystoreEntry(name, passwordEntry);
+			KeystoreEntry keystoreEntry = new KeystoreEntry(name, new PasswordEntry(password));
 			Keystore keystore = keystoreService.getKeystoreByID(keystoreID);
 			keystoreService.addKeystoreEntry(keystore, keystoreEntry);
-		} catch (PasswordValidationException e) {
-			showAlert("Error", "Password can't be empty");
+			observable.notifyObservers();
+		} catch (Exception e) {
+			showAlert("Error", e.getMessage());
 		}
 	}
 
@@ -77,5 +78,9 @@ public class AddKeystoreEntryForm extends Application {
 
 	public void setKeystoreID(UUID keystoreID) {
 		this.keystoreID = keystoreID;
+	}
+
+	public void setObservable(KeystoreEntryObservable observable) {
+		this.observable = observable;
 	}
 }

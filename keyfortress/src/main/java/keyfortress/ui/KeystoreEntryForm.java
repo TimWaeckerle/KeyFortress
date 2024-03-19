@@ -1,29 +1,43 @@
 package keyfortress.ui;
 
+import java.util.UUID;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import keyfortress.domain.events.KeystoreEntryObservable;
+import keyfortress.domain.events.KeystoreEntryObserver;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
+import keyfortress.domain.repositories.FileSystemKeystoreRepository;
+import keyfortress.domain.services.KeystoreService;
 
-public class KeystoreEntryForm extends Application {
+public class KeystoreEntryForm extends Application implements KeystoreEntryObserver {
 
 	private Keystore keystore;
+	private VBox vbox;
+	private KeystoreEntryObservable observable;
 
 	@Override
 	public void start(Stage primaryStage) {
-		VBox vbox = new VBox(10);
+		observable = new KeystoreEntryObservable();
+		observable.addObserver(this);
+		vbox = new VBox(10);
 		vbox.setPadding(new Insets(10));
 
 		if (keystore != null && keystore.getKeyEntries() != null) {
-			loadKeystoreEntries(vbox);
+			loadKeystoreEntries();
 		}
 
 		Button addEntryButton = new Button("Add Entry");
@@ -51,20 +65,45 @@ public class KeystoreEntryForm extends Application {
 	}
 
 	private void copyPasswordToClipboard(KeystoreEntry keystoreEntry) {
-		// Implementieren Sie hier die Logik zum Kopieren des Passworts in die
-		// Zwischenablage
+		if (keystoreEntry != null && keystoreEntry.getPassword() != null) {
+			try {
+				String password = keystoreEntry.getPassword().getDecryptedPassword();
+				Clipboard clipboard = Clipboard.getSystemClipboard();
+				ClipboardContent content = new ClipboardContent();
+
+				content.putString(password);
+				clipboard.setContent(content);
+
+			} catch (Exception e) {
+				showAlert("Error", e.getMessage());
+				e.printStackTrace();
+			}
+		}
 	}
 
-	private void loadKeystoreEntries(VBox vbox) {
+	private void loadKeystoreEntries() {
+		vbox.getChildren().clear();
+		reloadKeystore();
 		for (KeystoreEntry keystoreEntry : keystore.getKeyEntries()) {
+			HBox entryBox = new HBox(10);
+			entryBox.setAlignment(Pos.CENTER_LEFT);
+
 			Label nameLabel = new Label("Name: " + keystoreEntry.getName());
 			Button passwordButton = new Button("Password");
 			passwordButton.setOnAction(e -> {
 				copyPasswordToClipboard(keystoreEntry);
 			});
 
-			vbox.getChildren().addAll(nameLabel, passwordButton);
+			entryBox.getChildren().addAll(nameLabel, passwordButton);
+
+			vbox.getChildren().add(entryBox);
 		}
+	}
+
+	private void reloadKeystore() {
+		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
+		UUID id = keystore.getKeystoreID();
+		keystore = keystoreService.getKeystoreByID(id);
 	}
 
 	private void handleAddEntryButtonClick() {
@@ -72,17 +111,34 @@ public class KeystoreEntryForm extends Application {
 		addKeystoreEntryStage.setTitle("Add Entry");
 		AddKeystoreEntryForm addEntryForm = new AddKeystoreEntryForm();
 		addEntryForm.setKeystoreID(keystore.getKeystoreID());
+		addEntryForm.setObservable(observable);
 		addEntryForm.start(addKeystoreEntryStage);
 		addKeystoreEntryStage.show();
 	}
 
 	private void handleDeleteKeystoreButtonClick() {
+		// TODO
+		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 	}
 
 	private void handleLeaveKeystoreButtonClick(Stage primaryStage) {
+		primaryStage.close();
 	}
 
 	public void setKeystore(Keystore keystore) {
 		this.keystore = keystore;
+	}
+
+	@Override
+	public void onKeystoreEntryAdded() {
+		loadKeystoreEntries();
+	}
+
+	private void showAlert(String title, String message) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle(title);
+		alert.setHeaderText(null);
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
 }

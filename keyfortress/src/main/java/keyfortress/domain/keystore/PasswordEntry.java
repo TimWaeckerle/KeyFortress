@@ -11,19 +11,37 @@ public class PasswordEntry implements IPassword {
 
 	private byte[] password;
 	private byte[] salt;
+	private String key;
 
-	public PasswordEntry(String password) throws PasswordValidationException {
+	public PasswordEntry(String password) throws Exception {
 		if (PasswordValidationService.validate(password, 1, false, false)) {
 			this.salt = EncryptionService.generateSalt(saltSize);
-			this.password = EncryptionService.encryptPassword(password, salt);
+			generatePassword(password);
 		} else {
 			throw new PasswordValidationException(ErrorMessages.PasswordEntriesMessage.toString());
 		}
 	}
 
+	private void generatePassword(String password) throws Exception {
+		key = EncryptionService.generateRandomKey();
+		this.password = EncryptionService.encryptSymmetrical(password, key).getBytes();
+	}
+
+	public String getDecryptedPassword() throws Exception {
+		return EncryptionService.decryptSymmetrical(new String(password), key);
+	}
+
 	@Override
 	public byte[] getPassword() {
 		return password;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getClearPassword() {
+		return password.toString();
 	}
 
 	@Override

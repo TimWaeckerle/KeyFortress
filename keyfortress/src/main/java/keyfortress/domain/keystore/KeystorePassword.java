@@ -15,7 +15,7 @@ public final class KeystorePassword implements IPassword {
 	public KeystorePassword(String password) throws PasswordValidationException {
 		if (PasswordValidationService.validate(password, 8, true, true)) {
 			this.salt = EncryptionService.generateSalt(saltSize);
-			this.password = EncryptionService.encryptPassword(password, salt);
+			this.password = EncryptionService.encryptPasswordPermanent(password, salt);
 		} else {
 			throw new PasswordValidationException(ErrorMessages.KeyStorePasswordMessage.getValue());
 		}
