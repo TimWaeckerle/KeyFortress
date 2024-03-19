@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import keyfortress.domain.keystore.Keystore;
+import keyfortress.domain.keystore.KeystoreEntry;
 import keyfortress.domain.repositories.FileSystemKeystoreRepository;
 
 public class KeystoreService {
@@ -38,5 +39,14 @@ public class KeystoreService {
 			return Arrays.equals(keystorePassword, encryptedEnteredPassword);
 		}
 		return false;
+	}
+
+	private void saveKeystore(Keystore keystore) {
+		keystoreRepository.saveKeystore(keystore);
+	}
+
+	public void addKeystoreEntry(Keystore keystore, KeystoreEntry keystoreEntry) {
+		keystore.addKeyEntrie(keystoreEntry);
+		saveKeystore(keystore);
 	}
 }

@@ -6,12 +6,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
-import keyfortress.domain.repositories.FileSystemUserRepository;
-import keyfortress.domain.services.UserService;
 
 public class KeystoreEntryForm extends Application {
 
@@ -29,23 +29,30 @@ public class KeystoreEntryForm extends Application {
 		Button addEntryButton = new Button("Add Entry");
 		addEntryButton.setOnAction(event -> handleAddEntryButtonClick());
 
+		Button deleteKeystoreButton = new Button("Delete Whole Keystore");
+		deleteKeystoreButton.setOnAction(event -> handleDeleteKeystoreButtonClick());
+
 		Button leaveKeystoreButton = new Button("Leave Keystore");
 		leaveKeystoreButton.setOnAction(event -> handleLeaveKeystoreButtonClick(primaryStage));
 
-		VBox buttonsBox = new VBox(10);
-		buttonsBox.getChildren().addAll(addEntryButton, leaveKeystoreButton);
-		buttonsBox.setAlignment(Pos.BOTTOM_RIGHT);
+		HBox buttonsBox = new HBox(10);
+		buttonsBox.getChildren().addAll(addEntryButton, deleteKeystoreButton, leaveKeystoreButton);
+		buttonsBox.setPadding(new Insets(10));
+		buttonsBox.setAlignment(Pos.CENTER);
 
-		vbox.getChildren().add(buttonsBox);
+		BorderPane borderPane = new BorderPane();
+		borderPane.setCenter(vbox);
+		borderPane.setBottom(buttonsBox);
 
-		Scene scene = new Scene(vbox, 300, 200);
+		Scene scene = new Scene(borderPane, 300, 200);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Keystore Einträge");
 		primaryStage.show();
 	}
 
 	private void copyPasswordToClipboard(KeystoreEntry keystoreEntry) {
-		keystoreEntry.getPassword();
+		// Implementieren Sie hier die Logik zum Kopieren des Passworts in die
+		// Zwischenablage
 	}
 
 	private void loadKeystoreEntries(VBox vbox) {
@@ -61,15 +68,18 @@ public class KeystoreEntryForm extends Application {
 	}
 
 	private void handleAddEntryButtonClick() {
+		Stage addKeystoreEntryStage = new Stage();
+		addKeystoreEntryStage.setTitle("Add Entry");
+		AddKeystoreEntryForm addEntryForm = new AddKeystoreEntryForm();
+		addEntryForm.setKeystoreID(keystore.getKeystoreID());
+		addEntryForm.start(addKeystoreEntryStage);
+		addKeystoreEntryStage.show();
+	}
+
+	private void handleDeleteKeystoreButtonClick() {
 	}
 
 	private void handleLeaveKeystoreButtonClick(Stage primaryStage) {
-		UserService userService = new UserService(new FileSystemUserRepository());
-		Stage keystoreOverview = new Stage();
-		keystoreOverview.setTitle(userService.getLoggedInUser().getName());
-		KeystoreOverviewForm keystoreOverviewForm = new KeystoreOverviewForm();
-		keystoreOverviewForm.start(keystoreOverview);
-		keystoreOverview.show();
 	}
 
 	public void setKeystore(Keystore keystore) {

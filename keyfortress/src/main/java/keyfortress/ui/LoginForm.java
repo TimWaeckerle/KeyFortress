@@ -93,7 +93,7 @@ public class LoginForm extends Application {
 
 	private void startRegisterUi() {
 		Stage registrationStage = new Stage();
-		registrationStage.setTitle("Registration Form");
+		registrationStage.setTitle("Registration");
 		RegistrationForm registrationForm = new RegistrationForm();
 		registrationForm.start(registrationStage);
 		registrationStage.show();
