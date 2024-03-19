@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -47,6 +48,12 @@ public class RegistrationForm extends Application {
 		});
 
 		grid.add(registerButton, 0, 2);
+
+		grid.setOnKeyPressed(event -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				registerButton.fire();
+			}
+		});
 
 		Scene scene = new Scene(grid);
 		primaryStage.setScene(scene);

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import keyfortress.domain.exceptions.PasswordValidationException;
-import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.repositories.FileSystemUserRepository;
 import keyfortress.domain.user.AccountPassword;
 import keyfortress.domain.user.User;
@@ -21,6 +20,11 @@ public class UserService {
 	}
 
 	public void saveUser(User user) {
+		userRepository.saveUser(user);
+	}
+
+	public void connectUserToKeystore(User user, UUID keystoreID) {
+		user.addKeystores(keystoreID);
 		userRepository.saveUser(user);
 	}
 
@@ -44,7 +48,7 @@ public class UserService {
 		userRepository.delete(userId);
 	}
 
-	public List<Keystore> getAllKeystoresForUser(UUID userId) {
+	public List<UUID> getAllKeystoresForUser(UUID userId) {
 		User user = userRepository.findUserByID(userId);
 		if (user != null) {
 			return user.getKeystores();
@@ -77,18 +81,6 @@ public class UserService {
 			}
 		}
 		return false;
-	}
-
-	public Keystore getKeystoreByKeystoreID(UUID id) {
-
-		List<Keystore> keystores = getAllKeystoresForUser(loggedInUser.getId());
-
-		for (Keystore keystore : keystores) {
-			if (keystore.getKeystoreID().equals(id)) {
-				return keystore;
-			}
-		}
-		return null;
 	}
 
 	public User getLoggedInUser() {

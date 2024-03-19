@@ -1,6 +1,7 @@
 package keyfortress.ui;
 
 import java.util.List;
+import java.util.UUID;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -12,16 +13,20 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import keyfortress.domain.keystore.Keystore;
+import keyfortress.domain.repositories.FileSystemKeystoreRepository;
 import keyfortress.domain.repositories.FileSystemUserRepository;
+import keyfortress.domain.services.KeystoreService;
 import keyfortress.domain.services.UserService;
 
-public class KeyStoreOverviewForm extends Application {
+public class KeystoreOverviewForm extends Application {
 
 	private UserService userService;
+	private KeystoreService keystoreService;
 
 	@Override
 	public void start(Stage primaryStage) {
 		userService = new UserService(new FileSystemUserRepository());
+		keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 		BorderPane borderPane = new BorderPane();
 		borderPane.setPadding(new Insets(10));
 
@@ -66,11 +71,13 @@ public class KeyStoreOverviewForm extends Application {
 	}
 
 	public void updateKeystoreOverview(GridPane gridPane) {
-		List<Keystore> keystores = userService.getLoggedInUser().getKeystores();
+		List<UUID> keystores = userService.getLoggedInUser().getKeystores();
+
 		gridPane.getChildren().clear();
 		int row = 0;
-		for (Keystore keystore : keystores) {
-			Button button = new Button(keystore.getName());
+		for (UUID keystoreID : keystores) {
+			Keystore keystore = keystoreService.getKeystoreByID(keystoreID);
+			Button button = new Button();
 			button.setOnAction(event -> handleKeystoreButtonClick(keystore));
 			gridPane.add(button, 0, row++);
 		}
