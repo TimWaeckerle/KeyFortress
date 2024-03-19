@@ -52,4 +52,7 @@ public final class KeystorePassword implements IPassword {
 		return Arrays.equals(password, other.password) && Arrays.equals(salt, other.salt);
 	}
 
+	public byte[] getSalt() {
+		return salt;
+	}
 }

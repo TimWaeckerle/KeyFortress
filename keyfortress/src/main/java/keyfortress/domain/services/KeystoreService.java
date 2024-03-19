@@ -1,5 +1,6 @@
 package keyfortress.domain.services;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,5 +28,15 @@ public class KeystoreService {
 		}
 		keystoreRepository.saveKeystore(keystore);
 		return true;
+	}
+
+	public boolean verifyPasswordForKeystore(Keystore keystore, String password) {
+		if (keystore != null) {
+			byte[] keystorePassword = keystore.getPassword().getPassword();
+			byte[] keystorePasswordSalt = keystore.getPassword().getSalt();
+			byte[] encryptedEnteredPassword = EncryptionService.encryptPassword(password, keystorePasswordSalt);
+			return Arrays.equals(keystorePassword, encryptedEnteredPassword);
+		}
+		return false;
 	}
 }

@@ -29,7 +29,7 @@ public class FileSystemKeystoreRepository implements KeystoreRepository {
 		List<Keystore> keystores = findAll();
 		for (Keystore keystore : keystores) {
 			if (keystore.getKeystoreID().equals(keystoreID)) {
-				return null;
+				return keystore;
 			}
 		}
 		return null;
