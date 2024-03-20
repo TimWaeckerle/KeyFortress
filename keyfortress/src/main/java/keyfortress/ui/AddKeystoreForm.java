@@ -1,9 +1,6 @@
 package keyfortress.ui;
 
-import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -21,7 +18,7 @@ import keyfortress.domain.services.KeystoreService;
 import keyfortress.domain.services.UserService;
 import keyfortress.domain.user.User;
 
-public class AddKeystoreForm extends Application {
+public class AddKeystoreForm extends KeyFortressUI {
 
 	private Stage primaryStage;
 	private KeystoreOverviewObservable keystoreObservable;
@@ -88,14 +85,6 @@ public class AddKeystoreForm extends Application {
 		keyStoreForm.start(keystoreStage);
 		keystoreObservable.notifyObservers();
 		keystoreStage.show();
-	}
-
-	private void showAlert(String title, String message) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle(title);
-		alert.setHeaderText(null);
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 
 	public void setKeystoreOverviewObservable(KeystoreOverviewObservable keystoreObservable) {

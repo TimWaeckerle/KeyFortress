@@ -2,11 +2,9 @@ package keyfortress.ui;
 
 import java.util.UUID;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -25,17 +23,20 @@ import keyfortress.domain.keystore.KeystoreEntry;
 import keyfortress.domain.repositories.FileSystemKeystoreRepository;
 import keyfortress.domain.services.KeystoreService;
 
-public class KeystoreEntryForm extends Application implements KeystoreEntryObserver {
+public class KeystoreEntryForm extends KeyFortressUI implements KeystoreEntryObserver {
 
 	private Keystore keystore;
 	private VBox vbox;
 	private KeystoreEntryObservable entryObservable;
 	private KeystoreOverviewObservable keystoreObservable;
+	private KeystoreService keystoreService;
 
 	@Override
 	public void start(Stage primaryStage) {
 		entryObservable = new KeystoreEntryObservable();
 		entryObservable.addObserver(this);
+
+		keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 
 		BorderPane borderPane = new BorderPane();
 		borderPane.setPadding(new Insets(10));
@@ -112,7 +113,7 @@ public class KeystoreEntryForm extends Application implements KeystoreEntryObser
 			});
 
 			editButton.setOnAction(e -> {
-				editEntry(keystoreEntry);
+				openEditEntryForm(keystoreEntry);
 			});
 
 			deleteButton.setOnAction(e -> {
@@ -129,7 +130,7 @@ public class KeystoreEntryForm extends Application implements KeystoreEntryObser
 		vbox.getChildren().add(gridPane);
 	}
 
-	private void editEntry(KeystoreEntry keystoreEntry) {
+	private void openEditEntryForm(KeystoreEntry keystoreEntry) {
 		Stage editKeystoreEntry = new Stage();
 		editKeystoreEntry.setTitle("Edit " + keystoreEntry.getName());
 		EditEntryForm editEntryForm = new EditEntryForm();
@@ -141,7 +142,6 @@ public class KeystoreEntryForm extends Application implements KeystoreEntryObser
 	}
 
 	private void reloadKeystore() {
-		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 		UUID id = keystore.getKeystoreID();
 		keystore = keystoreService.getKeystoreByID(id);
 	}
@@ -157,7 +157,6 @@ public class KeystoreEntryForm extends Application implements KeystoreEntryObser
 	}
 
 	private void handleDeleteKeystoreButtonClick(Stage stage) {
-		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 		keystoreService.deleteKeystore(keystore);
 		keystoreObservable.notifyObservers();
 		showAlert("Information", "Keystore: " + keystore.getName() + " got deleted");
@@ -169,7 +168,6 @@ public class KeystoreEntryForm extends Application implements KeystoreEntryObser
 	}
 
 	private void handleDeleteEntryButtonClick(KeystoreEntry keystoreEntry) {
-		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 		keystoreService.removeKeystoreEntry(keystore, keystoreEntry);
 		entryObservable.notifyObservers();
 	}
@@ -185,13 +183,5 @@ public class KeystoreEntryForm extends Application implements KeystoreEntryObser
 	@Override
 	public void onKeystoreEntryChange() {
 		loadKeystoreEntries();
-	}
-
-	private void showAlert(String title, String message) {
-		Alert alert = new Alert(Alert.AlertType.INFORMATION);
-		alert.setTitle(title);
-		alert.setHeaderText(null);
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 }

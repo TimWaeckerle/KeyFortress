@@ -18,7 +18,7 @@ public class PasswordEntry implements IPassword {
 			this.salt = EncryptionService.generateSalt(saltSize);
 			generatePassword(password);
 		} else {
-			throw new PasswordValidationException(ErrorMessages.PasswordEntriesMessage.toString());
+			throw new PasswordValidationException(ErrorMessages.PasswordEntriesMessage.getValue());
 		}
 	}
 

@@ -33,6 +33,10 @@ public class KeystoreService {
 		return true;
 	}
 
+	public void deleteKeystore(Keystore keystore) {
+		keystoreRepository.deleteKeystore(keystore.getKeystoreID());
+	}
+
 	public boolean verifyPasswordForKeystore(Keystore keystore, String password) {
 		if (keystore != null) {
 			byte[] keystorePassword = keystore.getPassword().getPassword();
@@ -44,6 +48,13 @@ public class KeystoreService {
 		return false;
 	}
 
+	public KeystoreEntry createKeystoreEntry(String name, String password) throws Exception {
+		if (name.isEmpty() || password.isEmpty()) {
+			throw new Exception("Name or Password can't be empty.");
+		}
+		return new KeystoreEntry(name, new PasswordEntry(password));
+	}
+
 	private void saveKeystore(Keystore keystore) {
 		keystoreRepository.saveKeystore(keystore);
 	}
@@ -53,22 +64,22 @@ public class KeystoreService {
 		saveKeystore(keystore);
 	}
 
-	public void removeKeystoreEntry(Keystore keystore, KeystoreEntry keystoreEntry) {
-		keystore.removeKeyEntrie(keystoreEntry);
+	public void addKeystoreEntry(UUID keystoreID, KeystoreEntry keystoreEntry) throws ObjectAlreadyExistsException {
+		Keystore keystore = getKeystoreByID(keystoreID);
+		keystore.addKeystoreEntry(keystoreEntry);
 		saveKeystore(keystore);
 	}
 
-	public void deleteKeystore(Keystore keystore) {
-		keystoreRepository.deleteKeystore(keystore.getKeystoreID());
+	public void removeKeystoreEntry(Keystore keystore, KeystoreEntry keystoreEntry) {
+		keystore.removeKeyEntrie(keystoreEntry);
+		saveKeystore(keystore);
 	}
 
 	public void updateKeystoreEntry(UUID keystoreID, KeystoreEntry keystoreEntry, String newPassword, String newName)
 			throws Exception {
 		Keystore keystore = keystoreRepository.findKeystoreByID(keystoreID);
 		keystore.removeKeyEntrie(keystoreEntry);
-		keystoreEntry.setName(newName);
-		keystoreEntry.setPassword(new PasswordEntry(newPassword));
-		keystore.addKeystoreEntry(keystoreEntry);
+		keystore.addKeystoreEntry(createKeystoreEntry(newName, newPassword));
 		keystoreRepository.saveKeystore(keystore);
 	}
 }

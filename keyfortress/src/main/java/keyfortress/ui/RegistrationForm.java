@@ -1,9 +1,6 @@
 package keyfortress.ui;
 
-import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -16,7 +13,7 @@ import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.repositories.FileSystemUserRepository;
 import keyfortress.domain.services.UserService;
 
-public class RegistrationForm extends Application {
+public class RegistrationForm extends KeyFortressUI {
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -72,13 +69,5 @@ public class RegistrationForm extends Application {
 			showAlert("Error", ex.getMessage());
 			return;
 		}
-	}
-
-	private void showAlert(String title, String message) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle(title);
-		alert.setHeaderText(null);
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 }

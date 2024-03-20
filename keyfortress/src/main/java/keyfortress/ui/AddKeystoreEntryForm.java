@@ -2,11 +2,8 @@ package keyfortress.ui;
 
 import java.util.UUID;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -14,13 +11,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import keyfortress.domain.events.KeystoreEntryObservable;
-import keyfortress.domain.keystore.Keystore;
-import keyfortress.domain.keystore.KeystoreEntry;
-import keyfortress.domain.keystore.PasswordEntry;
 import keyfortress.domain.repositories.FileSystemKeystoreRepository;
 import keyfortress.domain.services.KeystoreService;
 
-public class AddKeystoreEntryForm extends Application {
+public class AddKeystoreEntryForm extends KeyFortressUI {
 
 	private UUID keystoreID;
 	private KeystoreEntryObservable observable;
@@ -59,21 +53,11 @@ public class AddKeystoreEntryForm extends Application {
 	private void addEntry(String name, String password) {
 		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 		try {
-			KeystoreEntry keystoreEntry = new KeystoreEntry(name, new PasswordEntry(password));
-			Keystore keystore = keystoreService.getKeystoreByID(keystoreID);
-			keystoreService.addKeystoreEntry(keystore, keystoreEntry);
+			keystoreService.addKeystoreEntry(keystoreID, keystoreService.createKeystoreEntry(name, password));
 			observable.notifyObservers();
 		} catch (Exception e) {
 			showAlert("Error", e.getMessage());
 		}
-	}
-
-	private void showAlert(String title, String message) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle(title);
-		alert.setHeaderText(null);
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 
 	public void setKeystoreID(UUID keystoreID) {

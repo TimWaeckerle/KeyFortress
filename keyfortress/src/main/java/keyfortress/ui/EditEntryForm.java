@@ -2,11 +2,8 @@ package keyfortress.ui;
 
 import java.util.UUID;
 
-import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
@@ -18,7 +15,7 @@ import keyfortress.domain.keystore.KeystoreEntry;
 import keyfortress.domain.repositories.FileSystemKeystoreRepository;
 import keyfortress.domain.services.KeystoreService;
 
-public class EditEntryForm extends Application {
+public class EditEntryForm extends KeyFortressUI {
 
 	private UUID keystoreID;
 	private KeystoreEntry keystoreEntry;
@@ -65,14 +62,6 @@ public class EditEntryForm extends Application {
 			showAlert("Error", e.getMessage());
 			e.printStackTrace();
 		}
-	}
-
-	private void showAlert(String title, String message) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.setTitle(title);
-		alert.setHeaderText(null);
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 
 	public void setKeystoreEntry(KeystoreEntry keystoreEntry) {
