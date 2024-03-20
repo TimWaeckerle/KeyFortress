@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import keyfortress.domain.exceptions.ObjectAlreadyExistsException;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
+import keyfortress.domain.keystore.PasswordEntry;
 import keyfortress.domain.repositories.FileSystemKeystoreRepository;
 
 public class KeystoreService {
@@ -46,7 +48,7 @@ public class KeystoreService {
 		keystoreRepository.saveKeystore(keystore);
 	}
 
-	public void addKeystoreEntry(Keystore keystore, KeystoreEntry keystoreEntry) {
+	public void addKeystoreEntry(Keystore keystore, KeystoreEntry keystoreEntry) throws ObjectAlreadyExistsException {
 		keystore.addKeystoreEntry(keystoreEntry);
 		saveKeystore(keystore);
 	}
@@ -58,5 +60,15 @@ public class KeystoreService {
 
 	public void deleteKeystore(Keystore keystore) {
 		keystoreRepository.deleteKeystore(keystore.getKeystoreID());
+	}
+
+	public void updateKeystoreEntry(UUID keystoreID, KeystoreEntry keystoreEntry, String newPassword, String newName)
+			throws Exception {
+		Keystore keystore = keystoreRepository.findKeystoreByID(keystoreID);
+		keystore.removeKeyEntrie(keystoreEntry);
+		keystoreEntry.setName(newName);
+		keystoreEntry.setPassword(new PasswordEntry(newPassword));
+		keystore.addKeystoreEntry(keystoreEntry);
+		keystoreRepository.saveKeystore(keystore);
 	}
 }

@@ -94,6 +94,7 @@ public class KeystoreEntryForm extends Application implements KeystoreEntryObser
 	private void loadKeystoreEntries() {
 		vbox.getChildren().clear();
 		reloadKeystore();
+
 		GridPane gridPane = new GridPane();
 		gridPane.setHgap(10);
 		gridPane.setVgap(10);
@@ -103,22 +104,40 @@ public class KeystoreEntryForm extends Application implements KeystoreEntryObser
 		for (KeystoreEntry keystoreEntry : keystore.getKeyEntries()) {
 			Label nameLabel = new Label(keystoreEntry.getName());
 			Button passwordButton = new Button("Copy Password");
+			Button editButton = new Button("Edit");
+			Button deleteButton = new Button("Delete");
+
 			passwordButton.setOnAction(e -> {
 				copyPasswordToClipboard(keystoreEntry);
 			});
 
-			Button deleteButton = new Button("Delete");
+			editButton.setOnAction(e -> {
+				editEntry(keystoreEntry);
+			});
+
 			deleteButton.setOnAction(e -> {
 				handleDeleteEntryButtonClick(keystoreEntry);
 			});
 
 			gridPane.add(nameLabel, 0, row);
 			gridPane.add(passwordButton, 1, row);
-			gridPane.add(deleteButton, 2, row);
+			gridPane.add(editButton, 2, row);
+			gridPane.add(deleteButton, 3, row);
 			row++;
 		}
 
 		vbox.getChildren().add(gridPane);
+	}
+
+	private void editEntry(KeystoreEntry keystoreEntry) {
+		Stage editKeystoreEntry = new Stage();
+		editKeystoreEntry.setTitle("Edit " + keystoreEntry.getName());
+		EditEntryForm editEntryForm = new EditEntryForm();
+		editEntryForm.setKeystoreEntry(keystoreEntry);
+		editEntryForm.setKeystoreID(keystore.getKeystoreID());
+		editEntryForm.setObservable(entryObservable);
+		editEntryForm.start(editKeystoreEntry);
+		editKeystoreEntry.show();
 	}
 
 	private void reloadKeystore() {

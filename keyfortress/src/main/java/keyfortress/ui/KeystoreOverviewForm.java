@@ -61,7 +61,7 @@ public class KeystoreOverviewForm extends Application implements KeystoreOvervie
 
 		Scene scene = new Scene(borderPane, 400, 300);
 		primaryStage.setScene(scene);
-		primaryStage.setTitle("Keystore Overview");
+		primaryStage.setTitle(userService.getLoggedInUser().getName());
 		primaryStage.show();
 	}
 

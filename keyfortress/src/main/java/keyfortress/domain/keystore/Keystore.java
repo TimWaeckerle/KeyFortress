@@ -4,17 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import keyfortress.ErrorMessages;
+import keyfortress.domain.exceptions.ObjectAlreadyExistsException;
+
 public class Keystore {
 	private final UUID keystoreID;
 	private String name;
 	private KeystorePassword password;
-	private List<KeystoreEntry> keyEntry;
+	private List<KeystoreEntry> keyEntries;
 
 	public Keystore(String name, KeystorePassword password) {
 		this.keystoreID = UUID.randomUUID();
 		this.name = name;
 		this.password = password;
-		keyEntry = new ArrayList<>();
+		keyEntries = new ArrayList<>();
 	}
 
 	public String getName() {
@@ -34,14 +37,20 @@ public class Keystore {
 	}
 
 	public List<KeystoreEntry> getKeyEntries() {
-		return keyEntry;
+		return keyEntries;
 	}
 
-	public void addKeystoreEntry(KeystoreEntry entry) {
-		if (keyEntry == null) {
-			keyEntry = new ArrayList<>();
+	public void addKeystoreEntry(KeystoreEntry entry) throws ObjectAlreadyExistsException {
+		if (keyEntries == null) {
+			keyEntries = new ArrayList<>();
 		}
-		keyEntry.add(entry);
+
+		for (KeystoreEntry existingEntry : keyEntries) {
+			if (existingEntry.getName().equals(entry.getName())) {
+				throw new ObjectAlreadyExistsException(ErrorMessages.EntryAlreadyExists.getValue());
+			}
+		}
+		keyEntries.add(entry);
 	}
 
 	public UUID getKeystoreID() {
@@ -49,6 +58,15 @@ public class Keystore {
 	}
 
 	public void removeKeyEntrie(KeystoreEntry entry) {
-		keyEntry.remove(entry);
+		int index = -1;
+		for (int i = 0; i < keyEntries.size(); i++) {
+			if (keyEntries.get(i).getName().equals(entry.getName())) {
+				index = i;
+				break;
+			}
+		}
+		if (index != -1) {
+			keyEntries.remove(index);
+		}
 	}
 }
