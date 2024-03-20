@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -80,6 +81,20 @@ public class FileSystemKeystoreRepository implements KeystoreRepository {
 			e.printStackTrace();
 			return new ArrayList<>();
 		}
+	}
+
+	@Override
+	public void deleteKeystore(UUID keystoreID) {
+		List<Keystore> keystores = findAll();
+		Iterator<Keystore> iterator = keystores.iterator();
+		while (iterator.hasNext()) {
+			Keystore keystore = iterator.next();
+			if (keystore.getKeystoreID().equals(keystoreID)) {
+				iterator.remove();
+				break;
+			}
+		}
+		writeToFile(keystores);
 	}
 
 	private void writeToFile(List<Keystore> keystores) {

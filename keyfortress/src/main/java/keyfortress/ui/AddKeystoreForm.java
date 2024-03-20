@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import keyfortress.domain.events.KeystoreOverviewObservable;
 import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystorePassword;
@@ -23,6 +24,7 @@ import keyfortress.domain.user.User;
 public class AddKeystoreForm extends Application {
 
 	private Stage primaryStage;
+	private KeystoreOverviewObservable keystoreObservable;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -82,7 +84,9 @@ public class AddKeystoreForm extends Application {
 		keystoreStage.setTitle(user.getName());
 		KeystoreEntryForm keyStoreForm = new KeystoreEntryForm();
 		keyStoreForm.setKeystore(keystore);
+		keyStoreForm.setKeystoreOverviewObservable(keystoreObservable);
 		keyStoreForm.start(keystoreStage);
+		keystoreObservable.notifyObservers();
 		keystoreStage.show();
 	}
 
@@ -92,5 +96,9 @@ public class AddKeystoreForm extends Application {
 		alert.setHeaderText(null);
 		alert.setContentText(message);
 		alert.showAndWait();
+	}
+
+	public void setKeystoreOverviewObservable(KeystoreOverviewObservable keystoreObservable) {
+		this.keystoreObservable = keystoreObservable;
 	}
 }

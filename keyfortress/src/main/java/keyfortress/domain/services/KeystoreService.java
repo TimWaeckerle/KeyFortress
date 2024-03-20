@@ -35,7 +35,8 @@ public class KeystoreService {
 		if (keystore != null) {
 			byte[] keystorePassword = keystore.getPassword().getPassword();
 			byte[] keystorePasswordSalt = keystore.getPassword().getSalt();
-			byte[] encryptedEnteredPassword = EncryptionService.encryptPasswordPermanent(password, keystorePasswordSalt);
+			byte[] encryptedEnteredPassword = EncryptionService.encryptPasswordPermanent(password,
+					keystorePasswordSalt);
 			return Arrays.equals(keystorePassword, encryptedEnteredPassword);
 		}
 		return false;
@@ -48,5 +49,14 @@ public class KeystoreService {
 	public void addKeystoreEntry(Keystore keystore, KeystoreEntry keystoreEntry) {
 		keystore.addKeystoreEntry(keystoreEntry);
 		saveKeystore(keystore);
+	}
+
+	public void removeKeystoreEntry(Keystore keystore, KeystoreEntry keystoreEntry) {
+		keystore.removeKeyEntrie(keystoreEntry);
+		saveKeystore(keystore);
+	}
+
+	public void deleteKeystore(Keystore keystore) {
+		keystoreRepository.deleteKeystore(keystore.getKeystoreID());
 	}
 }

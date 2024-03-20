@@ -16,7 +16,7 @@ public class KeystoreEntryObservable {
 
 	public void notifyObservers() {
 		for (KeystoreEntryObserver observer : observers) {
-			observer.onKeystoreEntryAdded();
+			observer.onKeystoreEntryChange();
 		}
 	}
 }

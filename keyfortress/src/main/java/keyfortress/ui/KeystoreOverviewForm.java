@@ -9,75 +9,72 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import keyfortress.domain.events.KeystoreOverviewObservable;
+import keyfortress.domain.events.KeystoreOverviewObserver;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.repositories.FileSystemKeystoreRepository;
 import keyfortress.domain.repositories.FileSystemUserRepository;
 import keyfortress.domain.services.KeystoreService;
 import keyfortress.domain.services.UserService;
 
-public class KeystoreOverviewForm extends Application {
+public class KeystoreOverviewForm extends Application implements KeystoreOverviewObserver {
 
 	private UserService userService;
 	private KeystoreService keystoreService;
-	private Stage primaryStage;
+	private KeystoreOverviewObservable keystoreObservable;
+	private VBox vbox;
 
 	@Override
 	public void start(Stage primaryStage) {
+		keystoreObservable = new KeystoreOverviewObservable();
+		keystoreObservable.addObserver(this);
 		userService = new UserService(new FileSystemUserRepository());
 		keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
+
 		BorderPane borderPane = new BorderPane();
 		borderPane.setPadding(new Insets(10));
-		this.primaryStage = primaryStage;
-		GridPane gridPane = new GridPane();
-		gridPane.setPadding(new Insets(10));
-		gridPane.setHgap(10);
-		gridPane.setVgap(10);
 
-		updateKeystoreOverview(gridPane);
+		vbox = new VBox(10);
+		vbox.setAlignment(Pos.CENTER);
+		vbox.setPadding(new Insets(10));
 
-		borderPane.setCenter(gridPane);
+		loadKeystores();
+
+		StackPane centerPane = new StackPane(new ScrollPane(vbox));
+		StackPane.setAlignment(centerPane, Pos.CENTER);
+		borderPane.setCenter(centerPane);
 
 		Button addKeystoreButton = new Button("Add Keystore");
 		addKeystoreButton.setOnAction(e -> handleAddKeystoreButtonClick());
-		StackPane.setAlignment(addKeystoreButton, Pos.BOTTOM_RIGHT);
-		StackPane stackPane = new StackPane(addKeystoreButton);
-		borderPane.setBottom(stackPane);
+		borderPane.setBottom(addKeystoreButton);
+		BorderPane.setAlignment(addKeystoreButton, Pos.CENTER);
 
 		Scene scene = new Scene(borderPane, 400, 300);
 		primaryStage.setScene(scene);
+		primaryStage.setTitle("Keystore Overview");
 		primaryStage.show();
 	}
 
 	private void handleKeystoreButtonClick(Keystore keystore) {
-		boolean true1 = keystoreService.verifyPasswordForKeystore(keystore, askForPassword());
-		if (true1) {
-			Stage keystoreEntryStage = new Stage();
-			keystoreEntryStage.setTitle(keystore.getName());
+		boolean verified = keystoreService.verifyPasswordForKeystore(keystore, askForPassword());
+		if (verified) {
 			KeystoreEntryForm keystoreForm = new KeystoreEntryForm();
 			keystoreForm.setKeystore(keystore);
-			keystoreForm.start(keystoreEntryStage);
-			keystoreEntryStage.show();
-			primaryStage.close();
+			keystoreForm.setKeystoreOverviewObservable(keystoreObservable);
+			keystoreForm.start(new Stage());
 		} else {
 			showAlert("Error", "Wrong Password");
 		}
-	}
-
-	private void showAlert(String title, String message) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle(title);
-		alert.setHeaderText(null);
-		alert.setContentText(message);
-		alert.showAndWait();
 	}
 
 	private String askForPassword() {
@@ -116,27 +113,35 @@ public class KeystoreOverviewForm extends Application {
 	}
 
 	private void handleAddKeystoreButtonClick() {
-		Stage addKeystoreStage = new Stage();
-		addKeystoreStage.setTitle("Add Keystore");
 		AddKeystoreForm addKeystoreForm = new AddKeystoreForm();
-		addKeystoreForm.start(addKeystoreStage);
-		addKeystoreStage.show();
-		primaryStage.close();
+		addKeystoreForm.setKeystoreOverviewObservable(keystoreObservable);
+		addKeystoreForm.start(new Stage());
 	}
 
-	public void updateKeystoreOverview(GridPane gridPane) {
-		List<UUID> keystores = userService.getLoggedInUser().getKeystores();
+	public void loadKeystores() {
+		List<UUID> keystoreIDs = userService.getLoggedInUser().getKeystores();
 
-		gridPane.getChildren().clear();
-		int row = 0;
-		for (UUID keystoreID : keystores) {
+		vbox.getChildren().clear();
+		for (UUID keystoreID : keystoreIDs) {
 			Keystore keystore = keystoreService.getKeystoreByID(keystoreID);
 			if (keystore != null) {
-				Button button = new Button();
-				button.setText(keystore.getName());
+				Button button = new Button(keystore.getName());
 				button.setOnAction(event -> handleKeystoreButtonClick(keystore));
-				gridPane.add(button, 0, row++);
+				vbox.getChildren().add(button);
 			}
 		}
+	}
+
+	@Override
+	public void onKeystoreChange() {
+		loadKeystores();
+	}
+
+	private void showAlert(String title, String message) {
+		Alert alert = new Alert(Alert.AlertType.ERROR);
+		alert.setTitle(title);
+		alert.setHeaderText(null);
+		alert.setContentText(message);
+		alert.showAndWait();
 	}
 }

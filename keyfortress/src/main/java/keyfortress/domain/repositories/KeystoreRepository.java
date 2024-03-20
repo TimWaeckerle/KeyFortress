@@ -13,4 +13,6 @@ public interface KeystoreRepository {
 	public void addKeystoreEntry(KeystoreEntry entry);
 
 	public void removeKeystoreEntry(KeystoreEntry entry);
+
+	public void deleteKeystore(UUID keystoreID);
 }

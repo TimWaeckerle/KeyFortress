@@ -1,5 +1,5 @@
 package keyfortress.domain.events;
 
 public interface KeystoreEntryObserver {
-	void onKeystoreEntryAdded();
+	void onKeystoreEntryChange();
 }
