@@ -10,7 +10,6 @@ import keyfortress.domain.keystore.KeystoreEntry;
 import keyfortress.domain.keystore.KeystorePassword;
 import keyfortress.domain.keystore.PasswordEntry;
 import keyfortress.domain.repositories.FileSystemKeystoreRepository;
-import keyfortress.domain.repositories.FileSystemUserRepository;
 import keyfortress.domain.user.User;
 
 public class KeystoreService {
@@ -42,18 +41,11 @@ public class KeystoreService {
 			throw new Exception();
 		}
 		keystoreRepository.saveKeystore(keystore);
-		bindKeystoreToUser(keystore, user);
 		return keystore;
 	}
 
 	public void deleteKeystore(Keystore keystore) {
 		keystoreRepository.deleteKeystore(keystore.getKeystoreID());
-	}
-
-	private void bindKeystoreToUser(Keystore keystore, User user) {
-		user.addKeystores(keystore.getKeystoreID());
-		UserService userService = new UserService(new FileSystemUserRepository());
-		userService.saveUser(user);
 	}
 
 	public boolean verifyPasswordForKeystore(Keystore keystore, String password) {

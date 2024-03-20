@@ -65,6 +65,7 @@ public class AddKeystoreForm extends KeyFortressUI {
 		try {
 			User user = userService.getLoggedInUser();
 			Keystore keystore = keystoreService.createKeystoreAndBindToUser(name, password, user);
+			userService.addKeystoreToUser(keystore, user);
 			openKeystore(user, keystore);
 			primaryStage.close();
 		} catch (PasswordValidationException e) {

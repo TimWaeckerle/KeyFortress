@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 
 import keyfortress.domain.exceptions.PasswordValidationException;
+import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.repositories.FileSystemUserRepository;
 import keyfortress.domain.user.AccountPassword;
 import keyfortress.domain.user.User;
@@ -66,6 +67,13 @@ public class UserService {
 		}
 		User newUser = new User(username, new AccountPassword(password));
 		userRepository.saveUser(newUser);
+	}
+
+	public void addKeystoreToUser(Keystore keystore, User user) {
+		if (keystore.equals(null) && user.equals(null)) {
+			user.addKeystores(keystore.getKeystoreID());
+			saveUser(user);
+		}
 	}
 
 	public boolean authenticateUser(String username, String password) throws PasswordValidationException {
