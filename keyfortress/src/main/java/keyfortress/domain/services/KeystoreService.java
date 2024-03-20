@@ -7,8 +7,11 @@ import java.util.UUID;
 import keyfortress.domain.exceptions.ObjectAlreadyExistsException;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
+import keyfortress.domain.keystore.KeystorePassword;
 import keyfortress.domain.keystore.PasswordEntry;
 import keyfortress.domain.repositories.FileSystemKeystoreRepository;
+import keyfortress.domain.repositories.FileSystemUserRepository;
+import keyfortress.domain.user.User;
 
 public class KeystoreService {
 	private final FileSystemKeystoreRepository keystoreRepository;
@@ -25,16 +28,32 @@ public class KeystoreService {
 		return keystoreRepository.findKeystoreByID(keystoreID);
 	}
 
-	public boolean createKeystore(Keystore keystore) {
+	public Keystore createKeystoreAndBindToUser(String name, String password, User user) throws Exception {
+		if (name.isEmpty() || password.isEmpty() || user.equals(null)) {
+			throw new Exception("Name and Password can t be empty.");
+		}
+		if (user.equals(null)) {
+			throw new Exception("Couldn t bind Keystore to User. User seems not to be logged in.");
+		}
+
+		Keystore keystore = new Keystore(name, new KeystorePassword(password));
+
 		if (keystoreRepository.findKeystoreByID(keystore.getKeystoreID()) != null) {
-			return false;
+			throw new Exception();
 		}
 		keystoreRepository.saveKeystore(keystore);
-		return true;
+		bindKeystoreToUser(keystore, user);
+		return keystore;
 	}
 
 	public void deleteKeystore(Keystore keystore) {
 		keystoreRepository.deleteKeystore(keystore.getKeystoreID());
+	}
+
+	private void bindKeystoreToUser(Keystore keystore, User user) {
+		user.addKeystores(keystore.getKeystoreID());
+		UserService userService = new UserService(new FileSystemUserRepository());
+		userService.saveUser(user);
 	}
 
 	public boolean verifyPasswordForKeystore(Keystore keystore, String password) {

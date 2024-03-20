@@ -11,7 +11,6 @@ import javafx.stage.Stage;
 import keyfortress.domain.events.KeystoreOverviewObservable;
 import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.keystore.Keystore;
-import keyfortress.domain.keystore.KeystorePassword;
 import keyfortress.domain.repositories.FileSystemKeystoreRepository;
 import keyfortress.domain.repositories.FileSystemUserRepository;
 import keyfortress.domain.services.KeystoreService;
@@ -64,14 +63,13 @@ public class AddKeystoreForm extends KeyFortressUI {
 		UserService userService = new UserService(new FileSystemUserRepository());
 		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 		try {
-			KeystorePassword keyPassword = new KeystorePassword(password);
-			Keystore keystore = new Keystore(name, keyPassword);
 			User user = userService.getLoggedInUser();
-			keystoreService.createKeystore(keystore);
-			userService.connectUserToKeystore(user, keystore.getKeystoreID());
+			Keystore keystore = keystoreService.createKeystoreAndBindToUser(name, password, user);
 			openKeystore(user, keystore);
 			primaryStage.close();
 		} catch (PasswordValidationException e) {
+			showAlert("Error", e.getMessage());
+		} catch (Exception e) {
 			showAlert("Error", e.getMessage());
 		}
 	}

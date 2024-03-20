@@ -15,8 +15,11 @@ import keyfortress.domain.services.UserService;
 
 public class RegistrationForm extends KeyFortressUI {
 
+	private Stage primaryStage;
+
 	@Override
 	public void start(Stage primaryStage) {
+		this.primaryStage = primaryStage;
 		primaryStage.setTitle("Register");
 
 		GridPane grid = new GridPane();
@@ -41,7 +44,6 @@ public class RegistrationForm extends KeyFortressUI {
 
 		registerButton.setOnAction(e -> {
 			createUser(usernameTextField.getText(), passwordTextField.getText());
-			primaryStage.close();
 		});
 
 		grid.add(registerButton, 0, 2);
@@ -60,13 +62,14 @@ public class RegistrationForm extends KeyFortressUI {
 	private void createUser(String username, String password) {
 		UserService userService = new UserService(new FileSystemUserRepository());
 		try {
-			if (!userService.createUser(username, password)) {
-				showAlert("Error", "User already exists. Choose another name");
-			} else {
-				showAlert("Information", "Account created successfully");
-			}
+			userService.createUser(username, password);
+			showAlert("Information", "Account created successfully");
+			primaryStage.close();
 		} catch (PasswordValidationException ex) {
 			showAlert("Error", ex.getMessage());
+			return;
+		} catch (Exception e) {
+			showAlert("Error", e.getMessage());
 			return;
 		}
 	}

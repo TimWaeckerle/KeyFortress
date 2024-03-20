@@ -56,14 +56,16 @@ public class UserService {
 		return null;
 	}
 
-	public boolean createUser(String username, String password) throws PasswordValidationException {
+	public void createUser(String username, String password) throws Exception {
+		if (username.isEmpty() || password.isEmpty()) {
+			throw new Exception("Password or Name can't be empty.");
+		}
+
 		if (userRepository.findUserByUsername(username) != null) {
-			return false;
+			throw new Exception("Username already exists. Choose another one.");
 		}
 		User newUser = new User(username, new AccountPassword(password));
 		userRepository.saveUser(newUser);
-		return true;
-
 	}
 
 	public boolean authenticateUser(String username, String password) throws PasswordValidationException {
