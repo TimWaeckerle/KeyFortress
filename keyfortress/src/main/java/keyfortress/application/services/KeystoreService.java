@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import keyfortress.domain.exceptions.ObjectAlreadyExistsException;
+import keyfortress.application.exception.ObjectAlreadyExistsException;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
 import keyfortress.domain.keystore.KeystorePassword;

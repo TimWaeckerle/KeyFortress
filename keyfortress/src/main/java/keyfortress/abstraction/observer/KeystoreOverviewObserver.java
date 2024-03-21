@@ -1,4 +1,4 @@
-package keyfortress.domain.events;
+package keyfortress.abstraction.observer;
 
 public interface KeystoreOverviewObserver {
 	void onKeystoreChange();

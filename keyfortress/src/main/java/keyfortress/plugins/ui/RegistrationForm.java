@@ -1,4 +1,4 @@
-package keyfortress.application.ui;
+package keyfortress.plugins.ui;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;

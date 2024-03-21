@@ -1,4 +1,4 @@
-package keyfortress.application.ui;
+package keyfortress.plugins.ui;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -8,9 +8,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import keyfortress.abstraction.observer.KeystoreOverviewObservable;
 import keyfortress.application.services.KeystoreService;
 import keyfortress.application.services.UserService;
-import keyfortress.domain.events.KeystoreOverviewObservable;
 import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.user.User;

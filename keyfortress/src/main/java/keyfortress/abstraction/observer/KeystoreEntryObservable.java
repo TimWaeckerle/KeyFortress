@@ -1,4 +1,4 @@
-package keyfortress.domain.events;
+package keyfortress.abstraction.observer;
 
 import java.util.ArrayList;
 import java.util.List;

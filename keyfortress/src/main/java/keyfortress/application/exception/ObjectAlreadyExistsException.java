@@ -1,4 +1,4 @@
-package keyfortress.domain.exceptions;
+package keyfortress.application.exception;
 
 public class ObjectAlreadyExistsException extends Exception {
 
