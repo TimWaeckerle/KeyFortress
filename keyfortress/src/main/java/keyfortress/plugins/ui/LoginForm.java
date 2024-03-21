@@ -10,7 +10,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import keyfortress.application.services.UserService;
-import keyfortress.domain.exceptions.PasswordValidationException;
+import keyfortress.domain.password.PasswordValidationException;
 import keyfortress.domain.user.User;
 import keyfortress.plugins.persistence.FileSystemUserRepository;
 

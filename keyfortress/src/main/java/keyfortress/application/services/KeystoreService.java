@@ -1,6 +1,6 @@
 package keyfortress.application.services;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,7 +9,7 @@ import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
 import keyfortress.domain.keystore.KeystorePassword;
 import keyfortress.domain.keystore.PasswordEntry;
-import keyfortress.domain.services.EncryptionService;
+import keyfortress.domain.password.PasswordRestriction;
 import keyfortress.domain.user.User;
 import keyfortress.plugins.persistence.FileSystemKeystoreRepository;
 
@@ -28,7 +28,7 @@ public class KeystoreService {
 		return keystoreRepository.findKeystoreByID(keystoreID);
 	}
 
-	public Keystore createKeystoreAndBindToUser(String name, String password, User user) throws Exception {
+	public Keystore createKeystore(String name, String password, User user) throws Exception {
 		if (name.isEmpty() || password.isEmpty() || user.equals(null)) {
 			throw new Exception("Name and Password can t be empty.");
 		}
@@ -36,7 +36,8 @@ public class KeystoreService {
 			throw new Exception("Couldn t bind Keystore to User. User seems not to be logged in.");
 		}
 
-		Keystore keystore = new Keystore(name, new KeystorePassword(password));
+		PasswordRestriction restriction = new PasswordRestriction(password, 8, true, true);
+		Keystore keystore = new Keystore(name, new KeystorePassword(password, restriction), user.getId());
 
 		if (keystoreRepository.findKeystoreByID(keystore.getKeystoreID()) != null) {
 			throw new Exception();
@@ -51,11 +52,8 @@ public class KeystoreService {
 
 	public boolean verifyPasswordForKeystore(Keystore keystore, String password) {
 		if (keystore != null) {
-			byte[] keystorePassword = keystore.getPassword().getPassword();
-			byte[] keystorePasswordSalt = keystore.getPassword().getSalt();
-			byte[] encryptedEnteredPassword = EncryptionService.encryptPasswordPermanent(password,
-					keystorePasswordSalt);
-			return Arrays.equals(keystorePassword, encryptedEnteredPassword);
+			KeystorePassword enteredPassword = new KeystorePassword(password, keystore.getPassword().getSalt());
+			return keystore.getPassword().equals(enteredPassword);
 		}
 		return false;
 	}
@@ -64,7 +62,8 @@ public class KeystoreService {
 		if (name.isEmpty() || password.isEmpty()) {
 			throw new Exception("Name or Password can't be empty.");
 		}
-		return new KeystoreEntry(name, new PasswordEntry(password));
+		PasswordRestriction restriction = new PasswordRestriction(password, 1, false, false);
+		return new KeystoreEntry(name, new PasswordEntry(password, restriction));
 	}
 
 	private void saveKeystore(Keystore keystore) {
@@ -93,5 +92,20 @@ public class KeystoreService {
 		keystore.removeKeyEntrie(keystoreEntry);
 		keystore.addKeystoreEntry(createKeystoreEntry(newName, newPassword));
 		keystoreRepository.saveKeystore(keystore);
+	}
+
+	public List<UUID> getAllKeystoresForUser(User user) {
+		if(user.equals(null)) {
+			return null;
+		}
+		List<UUID> keystoreIDs = new ArrayList<>();
+		List<Keystore> allKeystores = keystoreRepository.findAll();
+
+		for (Keystore keystore : allKeystores) {
+			if (keystore.getUserID().equals(user.getId())) {
+				keystoreIDs.add(keystore.getKeystoreID());
+			}
+		}
+		return keystoreIDs;
 	}
 }

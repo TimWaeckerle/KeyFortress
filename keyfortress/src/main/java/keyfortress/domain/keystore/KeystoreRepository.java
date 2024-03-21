@@ -1,9 +1,6 @@
-package keyfortress.domain.repositories;
+package keyfortress.domain.keystore;
 
 import java.util.UUID;
-
-import keyfortress.domain.keystore.Keystore;
-import keyfortress.domain.keystore.KeystoreEntry;
 
 public interface KeystoreRepository {
 	public Keystore findKeystoreByID(UUID keystoreID);

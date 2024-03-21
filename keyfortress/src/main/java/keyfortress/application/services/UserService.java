@@ -1,12 +1,10 @@
 package keyfortress.application.services;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import keyfortress.domain.exceptions.PasswordValidationException;
-import keyfortress.domain.keystore.Keystore;
-import keyfortress.domain.services.EncryptionService;
+import keyfortress.domain.password.PasswordRestriction;
+import keyfortress.domain.password.PasswordValidationException;
 import keyfortress.domain.user.AccountPassword;
 import keyfortress.domain.user.User;
 import keyfortress.plugins.persistence.FileSystemUserRepository;
@@ -22,11 +20,6 @@ public class UserService {
 	}
 
 	public void saveUser(User user) {
-		userRepository.saveUser(user);
-	}
-
-	public void connectUserToKeystore(User user, UUID keystoreID) {
-		user.addKeystores(keystoreID);
 		userRepository.saveUser(user);
 	}
 
@@ -50,14 +43,6 @@ public class UserService {
 		userRepository.delete(userId);
 	}
 
-	public List<UUID> getAllKeystoresForUser(UUID userId) {
-		User user = userRepository.findUserByID(userId);
-		if (user != null) {
-			return user.getKeystores();
-		}
-		return null;
-	}
-
 	public void createUser(String username, String password) throws Exception {
 		if (username.isEmpty() || password.isEmpty()) {
 			throw new Exception("Password or Name can't be empty.");
@@ -66,27 +51,18 @@ public class UserService {
 		if (userRepository.findUserByUsername(username) != null) {
 			throw new Exception("Username already exists. Choose another one.");
 		}
-		User newUser = new User(username, new AccountPassword(password));
-		userRepository.saveUser(newUser);
-	}
 
-	public void addKeystoreToUser(Keystore keystore, User user) {
-		if (keystore.equals(null) && user.equals(null)) {
-			user.addKeystores(keystore.getKeystoreID());
-			saveUser(user);
-		}
+		PasswordRestriction restriction = new PasswordRestriction(password, 6, true, false);
+		User newUser = new User(username, new AccountPassword(password, restriction));
+		userRepository.saveUser(newUser);
 	}
 
 	public boolean authenticateUser(String username, String password) throws PasswordValidationException {
 		User user = userRepository.findUserByUsername(username);
 
 		if (user != null) {
-			byte[] storedPasswordHash = user.getPassword().getPassword();
-			byte[] storedSalt = user.getPassword().getSalt();
-
-			byte[] enteredPasswordHash = EncryptionService.encryptPasswordPermanent(password, storedSalt);
-
-			if (Arrays.equals(storedPasswordHash, enteredPasswordHash)) {
+			AccountPassword newAccountPassword = new AccountPassword(password, user.getPassword().getSalt());
+			if (user.getPassword().equals(newAccountPassword)) {
 				loggedInUser = user;
 				return true;
 			}

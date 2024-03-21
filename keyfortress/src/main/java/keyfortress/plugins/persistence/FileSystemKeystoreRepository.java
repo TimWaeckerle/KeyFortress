@@ -15,7 +15,7 @@ import com.google.gson.reflect.TypeToken;
 
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
-import keyfortress.domain.repositories.KeystoreRepository;
+import keyfortress.domain.keystore.KeystoreRepository;
 
 public class FileSystemKeystoreRepository implements KeystoreRepository {
 

@@ -1,21 +1,27 @@
 package keyfortress.domain.keystore;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
+import java.util.Base64;
 
-import keyfortress.domain.exceptions.ErrorMessages;
-import keyfortress.domain.exceptions.PasswordValidationException;
-import keyfortress.domain.services.EncryptionService;
-import keyfortress.domain.services.PasswordValidationService;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
-public class PasswordEntry implements IPassword {
+import keyfortress.domain.password.ErrorMessages;
+import keyfortress.domain.password.Password;
+import keyfortress.domain.password.PasswordRestriction;
+import keyfortress.domain.password.PasswordValidationException;
+
+public class PasswordEntry implements Password {
 
 	private byte[] password;
 	private byte[] salt;
 	private String key;
 
-	public PasswordEntry(String password) throws Exception {
-		if (PasswordValidationService.validate(password, 1, false, false)) {
-			this.salt = EncryptionService.generateSalt(saltSize);
+	public PasswordEntry(String password, PasswordRestriction restriction) throws Exception {
+		if (restriction.isValid()) {
+			this.salt = generateSalt(saltSize);
 			generatePassword(password);
 		} else {
 			throw new PasswordValidationException(ErrorMessages.PasswordEntriesMessage.getValue());
@@ -23,12 +29,19 @@ public class PasswordEntry implements IPassword {
 	}
 
 	private void generatePassword(String password) throws Exception {
-		key = EncryptionService.generateRandomKey();
-		this.password = EncryptionService.encryptSymmetrical(password, key).getBytes();
+		key = generateRandomKey();
+		this.password = encryptSymmetrical(password, key).getBytes();
 	}
 
 	public String getDecryptedPassword() throws Exception {
-		return EncryptionService.decryptSymmetrical(new String(password), key);
+		return decryptSymmetrical(new String(password), key);
+	}
+
+	private byte[] generateSalt(int length) {
+		byte[] salt = new byte[length];
+		SecureRandom random = new SecureRandom();
+		random.nextBytes(salt);
+		return salt;
 	}
 
 	@Override
@@ -42,6 +55,28 @@ public class PasswordEntry implements IPassword {
 
 	public String getClearPassword() {
 		return password.toString();
+	}
+
+	private String encryptSymmetrical(String password, String key) throws Exception {
+		Cipher cipher = Cipher.getInstance("AES");
+		SecretKey secretKey = new SecretKeySpec(key.getBytes(), "AES");
+		cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+		byte[] encryptedBytes = cipher.doFinal(password.getBytes());
+		return Base64.getEncoder().encodeToString(encryptedBytes);
+	}
+
+	private String decryptSymmetrical(String encryptedPassword, String key) throws Exception {
+		Cipher cipher = Cipher.getInstance("AES");
+		SecretKey secretKey = new SecretKeySpec(key.getBytes(), "AES");
+		cipher.init(Cipher.DECRYPT_MODE, secretKey);
+		byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(encryptedPassword));
+		return new String(decryptedBytes);
+	}
+
+	private static String generateRandomKey() {
+		byte[] randomBytes = new byte[16];
+		new SecureRandom().nextBytes(randomBytes);
+		return Base64.getEncoder().encodeToString(randomBytes);
 	}
 
 	@Override

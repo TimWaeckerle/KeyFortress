@@ -22,6 +22,7 @@ import keyfortress.abstraction.observer.KeystoreOverviewObserver;
 import keyfortress.application.services.KeystoreService;
 import keyfortress.application.services.UserService;
 import keyfortress.domain.keystore.Keystore;
+import keyfortress.domain.user.User;
 import keyfortress.plugins.persistence.FileSystemKeystoreRepository;
 import keyfortress.plugins.persistence.FileSystemUserRepository;
 
@@ -117,8 +118,8 @@ public class KeystoreOverviewForm extends KeyFortressUI implements KeystoreOverv
 	}
 
 	public void loadKeystores() {
-		List<UUID> keystoreIDs = userService.getLoggedInUser().getKeystores();
-
+		User user = userService.getLoggedInUser();
+		List<UUID> keystoreIDs = keystoreService.getAllKeystoresForUser(user);
 		vbox.getChildren().clear();
 		for (UUID keystoreID : keystoreIDs) {
 			Keystore keystore = keystoreService.getKeystoreByID(keystoreID);

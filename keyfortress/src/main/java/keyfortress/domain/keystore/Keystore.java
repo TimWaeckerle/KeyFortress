@@ -5,18 +5,20 @@ import java.util.List;
 import java.util.UUID;
 
 import keyfortress.application.exception.ObjectAlreadyExistsException;
-import keyfortress.domain.exceptions.ErrorMessages;
+import keyfortress.domain.password.ErrorMessages;
 
 public class Keystore {
 	private final UUID keystoreID;
 	private String name;
 	private KeystorePassword password;
 	private List<KeystoreEntry> keyEntries;
+	private UUID userID;
 
-	public Keystore(String name, KeystorePassword password) {
+	public Keystore(String name, KeystorePassword password, UUID userID) {
 		this.keystoreID = UUID.randomUUID();
 		this.name = name;
 		this.password = password;
+		this.userID = userID;
 		keyEntries = new ArrayList<>();
 	}
 
@@ -69,4 +71,9 @@ public class Keystore {
 			keyEntries.remove(index);
 		}
 	}
+
+	public UUID getUserID() {
+		return userID;
+	}
+	
 }

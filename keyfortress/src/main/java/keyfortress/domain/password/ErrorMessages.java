@@ -1,4 +1,4 @@
-package keyfortress.domain.exceptions;
+package keyfortress.domain.password;
 
 public enum ErrorMessages {
 

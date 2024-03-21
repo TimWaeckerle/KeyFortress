@@ -1,24 +1,32 @@
 package keyfortress.domain.keystore;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 
-import keyfortress.domain.exceptions.ErrorMessages;
-import keyfortress.domain.exceptions.PasswordValidationException;
-import keyfortress.domain.services.EncryptionService;
-import keyfortress.domain.services.PasswordValidationService;
+import keyfortress.domain.password.ErrorMessages;
+import keyfortress.domain.password.Password;
+import keyfortress.domain.password.PasswordRestriction;
+import keyfortress.domain.password.PasswordValidationException;
 
-public final class KeystorePassword implements IPassword {
+public final class KeystorePassword implements Password {
 
 	private byte[] password;
 	private byte[] salt;
 
-	public KeystorePassword(String password) throws PasswordValidationException {
-		if (PasswordValidationService.validate(password, 8, true, true)) {
-			this.salt = EncryptionService.generateSalt(saltSize);
-			this.password = EncryptionService.encryptPasswordPermanent(password, salt);
-		} else {
+	public KeystorePassword(String password, PasswordRestriction restriction) throws PasswordValidationException {
+		if (restriction.isValid()) {
+			this.salt = generateSalt(saltSize);
+			this.password = encryptPasswordPermanent(password, salt);
+		}  else {
 			throw new PasswordValidationException(ErrorMessages.KeyStorePasswordMessage.getValue());
 		}
+	}
+	
+	public KeystorePassword(String password, byte[] salt) {
+		this.salt = salt;
+		this.password = encryptPasswordPermanent(password, salt);
 	}
 
 	@Override
@@ -50,6 +58,26 @@ public final class KeystorePassword implements IPassword {
 			return false;
 		KeystorePassword other = (KeystorePassword) obj;
 		return Arrays.equals(password, other.password) && Arrays.equals(salt, other.salt);
+	}
+	
+	private byte[] generateSalt(int length) {
+		byte[] salt = new byte[length];
+		SecureRandom random = new SecureRandom();
+		random.nextBytes(salt);
+		return salt;
+	}
+
+	public static byte[] encryptPasswordPermanent(String password, byte[] salt) {
+		try {
+			MessageDigest digest = MessageDigest.getInstance("SHA-256");
+			digest.reset();
+			digest.update(salt);
+			byte[] hashedPassword = digest.digest(password.getBytes());
+			return hashedPassword;
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public byte[] getSalt() {

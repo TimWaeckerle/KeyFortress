@@ -56,7 +56,7 @@ public class EditEntryForm extends KeyFortressUI {
 	private void editEntry(String name, String password) {
 		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 		try {
-			keystoreService.updateKeystoreEntry(keystoreID, keystoreEntry, name, password);
+			keystoreService.updateKeystoreEntry(keystoreID, keystoreEntry, password, name);
 			observable.notifyObservers();
 		} catch (Exception e) {
 			showAlert("Error", e.getMessage());
