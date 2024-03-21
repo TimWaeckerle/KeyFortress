@@ -15,13 +15,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import keyfortress.application.services.KeystoreService;
 import keyfortress.domain.events.KeystoreEntryObservable;
 import keyfortress.domain.events.KeystoreEntryObserver;
 import keyfortress.domain.events.KeystoreOverviewObservable;
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
-import keyfortress.domain.repositories.FileSystemKeystoreRepository;
-import keyfortress.domain.services.KeystoreService;
+import keyfortress.plugins.persistence.FileSystemKeystoreRepository;
 
 public class KeystoreEntryForm extends KeyFortressUI implements KeystoreEntryObserver {
 

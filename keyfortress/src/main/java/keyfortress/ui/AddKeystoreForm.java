@@ -8,14 +8,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import keyfortress.application.services.KeystoreService;
+import keyfortress.application.services.UserService;
 import keyfortress.domain.events.KeystoreOverviewObservable;
 import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.keystore.Keystore;
-import keyfortress.domain.repositories.FileSystemKeystoreRepository;
-import keyfortress.domain.repositories.FileSystemUserRepository;
-import keyfortress.domain.services.KeystoreService;
-import keyfortress.domain.services.UserService;
 import keyfortress.domain.user.User;
+import keyfortress.plugins.persistence.FileSystemKeystoreRepository;
+import keyfortress.plugins.persistence.FileSystemUserRepository;
 
 public class AddKeystoreForm extends KeyFortressUI {
 

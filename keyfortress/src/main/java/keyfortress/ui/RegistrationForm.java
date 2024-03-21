@@ -9,9 +9,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import keyfortress.application.services.UserService;
 import keyfortress.domain.exceptions.PasswordValidationException;
-import keyfortress.domain.repositories.FileSystemUserRepository;
-import keyfortress.domain.services.UserService;
+import keyfortress.plugins.persistence.FileSystemUserRepository;
 
 public class RegistrationForm extends KeyFortressUI {
 

@@ -1,4 +1,4 @@
-package keyfortress.domain.services;
+package keyfortress.application.services;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,9 +6,10 @@ import java.util.UUID;
 
 import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.keystore.Keystore;
-import keyfortress.domain.repositories.FileSystemUserRepository;
+import keyfortress.domain.services.EncryptionService;
 import keyfortress.domain.user.AccountPassword;
 import keyfortress.domain.user.User;
+import keyfortress.plugins.persistence.FileSystemUserRepository;
 
 public class UserService {
 

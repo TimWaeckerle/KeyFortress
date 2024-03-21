@@ -17,13 +17,13 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import keyfortress.application.services.KeystoreService;
+import keyfortress.application.services.UserService;
 import keyfortress.domain.events.KeystoreOverviewObservable;
 import keyfortress.domain.events.KeystoreOverviewObserver;
 import keyfortress.domain.keystore.Keystore;
-import keyfortress.domain.repositories.FileSystemKeystoreRepository;
-import keyfortress.domain.repositories.FileSystemUserRepository;
-import keyfortress.domain.services.KeystoreService;
-import keyfortress.domain.services.UserService;
+import keyfortress.plugins.persistence.FileSystemKeystoreRepository;
+import keyfortress.plugins.persistence.FileSystemUserRepository;
 
 public class KeystoreOverviewForm extends KeyFortressUI implements KeystoreOverviewObserver {
 

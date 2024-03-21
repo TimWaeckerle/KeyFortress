@@ -1,4 +1,4 @@
-package keyfortress.domain.repositories;
+package keyfortress.plugins.persistence;
 
 import java.io.File;
 import java.io.FileReader;
@@ -15,6 +15,7 @@ import com.google.gson.reflect.TypeToken;
 
 import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
+import keyfortress.domain.repositories.KeystoreRepository;
 
 public class FileSystemKeystoreRepository implements KeystoreRepository {
 

@@ -1,4 +1,4 @@
-package keyfortress.domain.repositories;
+package keyfortress.plugins.persistence;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,6 +12,7 @@ import java.util.UUID;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import keyfortress.domain.repositories.UserRepository;
 import keyfortress.domain.user.User;
 
 public class FileSystemUserRepository implements UserRepository {

@@ -1,4 +1,4 @@
-package keyfortress.domain.services;
+package keyfortress.application.services;
 
 import java.util.Arrays;
 import java.util.List;
@@ -9,8 +9,9 @@ import keyfortress.domain.keystore.Keystore;
 import keyfortress.domain.keystore.KeystoreEntry;
 import keyfortress.domain.keystore.KeystorePassword;
 import keyfortress.domain.keystore.PasswordEntry;
-import keyfortress.domain.repositories.FileSystemKeystoreRepository;
+import keyfortress.domain.services.EncryptionService;
 import keyfortress.domain.user.User;
+import keyfortress.plugins.persistence.FileSystemKeystoreRepository;
 
 public class KeystoreService {
 	private final FileSystemKeystoreRepository keystoreRepository;

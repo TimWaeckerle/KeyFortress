@@ -10,9 +10,9 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import keyfortress.application.services.KeystoreService;
 import keyfortress.domain.events.KeystoreEntryObservable;
-import keyfortress.domain.repositories.FileSystemKeystoreRepository;
-import keyfortress.domain.services.KeystoreService;
+import keyfortress.plugins.persistence.FileSystemKeystoreRepository;
 
 public class AddKeystoreEntryForm extends KeyFortressUI {
 

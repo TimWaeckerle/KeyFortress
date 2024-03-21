@@ -2,7 +2,7 @@ package keyfortress.domain.user;
 
 import java.util.Arrays;
 
-import keyfortress.ErrorMessages;
+import keyfortress.domain.exceptions.ErrorMessages;
 import keyfortress.domain.exceptions.PasswordValidationException;
 import keyfortress.domain.keystore.IPassword;
 import keyfortress.domain.services.EncryptionService;
