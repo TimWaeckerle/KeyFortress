@@ -1,4 +1,4 @@
-package keyfortress.ui;
+package keyfortress.application.ui;
 
 import javafx.application.Application;
 import javafx.scene.control.Alert;

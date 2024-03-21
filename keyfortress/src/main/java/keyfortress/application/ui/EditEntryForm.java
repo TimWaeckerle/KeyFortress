@@ -1,4 +1,4 @@
-package keyfortress.ui;
+package keyfortress.application.ui;
 
 import java.util.UUID;
 
@@ -12,16 +12,18 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import keyfortress.application.services.KeystoreService;
 import keyfortress.domain.events.KeystoreEntryObservable;
+import keyfortress.domain.keystore.KeystoreEntry;
 import keyfortress.plugins.persistence.FileSystemKeystoreRepository;
 
-public class AddKeystoreEntryForm extends KeyFortressUI {
+public class EditEntryForm extends KeyFortressUI {
 
 	private UUID keystoreID;
+	private KeystoreEntry keystoreEntry;
 	private KeystoreEntryObservable observable;
 
 	@Override
 	public void start(Stage primaryStage) {
-		primaryStage.setTitle("Add Keystore Entry");
+		primaryStage.setTitle("Edit Keystore Entry " + keystoreEntry.getName());
 
 		GridPane gridPane = new GridPane();
 		gridPane.setPadding(new Insets(20));
@@ -30,6 +32,7 @@ public class AddKeystoreEntryForm extends KeyFortressUI {
 
 		Label nameLabel = new Label("Name:");
 		TextField nameTextField = new TextField();
+		nameTextField.setText(keystoreEntry.getName());
 		Label passwordLabel = new Label("Password:");
 		PasswordField passwordField = new PasswordField();
 
@@ -40,7 +43,7 @@ public class AddKeystoreEntryForm extends KeyFortressUI {
 
 		Button saveButton = new Button("Save");
 		saveButton.setOnAction(event -> {
-			addEntry(nameTextField.getText(), passwordField.getText());
+			editEntry(nameTextField.getText(), passwordField.getText());
 			primaryStage.close();
 		});
 		gridPane.add(saveButton, 1, 2);
@@ -50,14 +53,19 @@ public class AddKeystoreEntryForm extends KeyFortressUI {
 		primaryStage.show();
 	}
 
-	private void addEntry(String name, String password) {
+	private void editEntry(String name, String password) {
 		KeystoreService keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
 		try {
-			keystoreService.addKeystoreEntry(keystoreID, keystoreService.createKeystoreEntry(name, password));
+			keystoreService.updateKeystoreEntry(keystoreID, keystoreEntry, name, password);
 			observable.notifyObservers();
 		} catch (Exception e) {
 			showAlert("Error", e.getMessage());
+			e.printStackTrace();
 		}
+	}
+
+	public void setKeystoreEntry(KeystoreEntry keystoreEntry) {
+		this.keystoreEntry = keystoreEntry;
 	}
 
 	public void setKeystoreID(UUID keystoreID) {

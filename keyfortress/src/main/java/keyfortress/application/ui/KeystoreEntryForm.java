@@ -1,4 +1,4 @@
-package keyfortress.ui;
+package keyfortress.application.ui;
 
 import java.util.UUID;
 

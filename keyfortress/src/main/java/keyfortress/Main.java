@@ -1,6 +1,6 @@
 package keyfortress;
 
-import keyfortress.ui.LoginForm;
+import keyfortress.application.ui.LoginForm;
 
 public class Main {
 
