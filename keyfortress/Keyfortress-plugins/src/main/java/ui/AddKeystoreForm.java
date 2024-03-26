@@ -69,10 +69,8 @@ public class AddKeystoreForm extends KeyFortressUI {
 			primaryStage.close();
 		} catch (PasswordValidationException e) {
 			showAlert("Error", e.getMessage());
-			e.printStackTrace();
 		} catch (Exception e) {
 			showAlert("Error", e.getMessage());
-			e.printStackTrace();
 		}
 	}
 

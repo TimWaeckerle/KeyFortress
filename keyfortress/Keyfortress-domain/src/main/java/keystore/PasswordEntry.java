@@ -44,19 +44,6 @@ public class PasswordEntry implements Password {
 		return salt;
 	}
 
-	@Override
-	public byte[] getPassword() {
-		return password;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-
-	public String getClearPassword() {
-		return password.toString();
-	}
-
 	private String encryptSymmetrical(String password, String key) throws Exception {
 		Cipher cipher = Cipher.getInstance("AES");
 		SecretKey secretKey = new SecretKeySpec(key.getBytes(), "AES");
@@ -77,6 +64,19 @@ public class PasswordEntry implements Password {
 		byte[] randomBytes = new byte[16];
 		new SecureRandom().nextBytes(randomBytes);
 		return Base64.getEncoder().encodeToString(randomBytes);
+	}
+
+	@Override
+	public byte[] getPassword() {
+		return password;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getClearPassword() {
+		return password.toString();
 	}
 
 	@Override

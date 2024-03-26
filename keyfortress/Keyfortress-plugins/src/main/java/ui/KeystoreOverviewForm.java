@@ -1,5 +1,6 @@
 package ui;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -20,6 +21,12 @@ import javafx.stage.Stage;
 import keystore.Keystore;
 import observer.KeystoreOverviewObservable;
 import observer.KeystoreOverviewObserver;
+import password.strength.LengthPasswordEvaluationStrategy;
+import password.strength.NumericPasswordEvaluationStrategy;
+import password.strength.PasswordEvaluationStrategy;
+import password.strength.PasswordStrengthEvaluator;
+import password.strength.SpecialCharacterEvaluationStrategy;
+import password.strength.UpperCaseEvaluationStrategy;
 import persistence.FileSystemKeystoreRepository;
 import persistence.FileSystemUserRepository;
 import services.KeystoreService;
@@ -121,14 +128,49 @@ public class KeystoreOverviewForm extends KeyFortressUI implements KeystoreOverv
 		User user = userService.getLoggedInUser();
 		List<UUID> keystoreIDs = keystoreService.getAllKeystoresForUser(user);
 		vbox.getChildren().clear();
+
+		GridPane gridPane = new GridPane();
+		gridPane.setHgap(10);
+		gridPane.setVgap(5);
+
+		int row = 0;
+
 		for (UUID keystoreID : keystoreIDs) {
 			Keystore keystore = keystoreService.getKeystoreByID(keystoreID);
 			if (keystore != null) {
 				Button button = new Button(keystore.getName());
+				int passwordStrength = getPasswordEvaluator().evaluateKeystorePasswordStrength(keystore);
+
+				Label strengthLabel = new Label("Strength: " + passwordStrength);
+				strengthLabel.setStyle(getLabelColor(passwordStrength));
+
+				gridPane.addRow(row++, button, strengthLabel);
 				button.setOnAction(event -> handleKeystoreButtonClick(keystore));
-				vbox.getChildren().add(button);
 			}
 		}
+
+		vbox.getChildren().add(gridPane);
+	}
+
+	private String getLabelColor(int passwordStrength) {
+		String colorStyle = "-fx-text-fill: ";
+		if (passwordStrength < 5) {
+			colorStyle += "red;";
+		} else if (passwordStrength < 8) {
+			colorStyle += "gold;";
+		} else {
+			colorStyle += "green;";
+		}
+		return colorStyle;
+	}
+
+	private PasswordStrengthEvaluator getPasswordEvaluator() {
+		List<PasswordEvaluationStrategy> strategies = new ArrayList<>();
+		strategies.add(new LengthPasswordEvaluationStrategy());
+		strategies.add(new NumericPasswordEvaluationStrategy());
+		strategies.add(new SpecialCharacterEvaluationStrategy());
+		strategies.add(new UpperCaseEvaluationStrategy());
+		return new PasswordStrengthEvaluator(strategies);
 	}
 
 	@Override

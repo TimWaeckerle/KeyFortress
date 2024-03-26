@@ -165,6 +165,7 @@ public class KeystoreEntryForm extends KeyFortressUI implements KeystoreEntryObs
 
 	private void handleLeaveKeystoreButtonClick(Stage primaryStage) {
 		primaryStage.close();
+		keystoreObservable.notifyObservers();
 	}
 
 	private void handleDeleteEntryButtonClick(KeystoreEntry keystoreEntry) {

@@ -25,6 +25,10 @@ public final class KeystorePassword implements Password {
 	}
 
 	public KeystorePassword(String password, byte[] salt) {
+		if (password == null || salt == null) {
+			return;
+		}
+
 		this.salt = salt;
 		this.password = encryptPasswordPermanent(password, salt);
 	}
