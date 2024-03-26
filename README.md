@@ -1,4 +1,4 @@
-# Password Manager
+# KeyFortress
 
 This is a simple password manager designed to help users securely manage their passwords. The program was developed using Java and JavaFX, providing a user-friendly interface for managing password keystores.
 
