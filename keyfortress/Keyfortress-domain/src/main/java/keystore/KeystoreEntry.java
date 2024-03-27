@@ -7,7 +7,10 @@ public class KeystoreEntry {
 	private final String name;
 	private final PasswordEntry password;
 
-	public KeystoreEntry(String name, PasswordEntry password) {
+	public KeystoreEntry(String name, PasswordEntry password) throws Exception {
+		if (password == null || name == null) {
+			throw new Exception("Password and name can't be empty");
+		}
 		this.name = name;
 		this.password = password;
 	}
