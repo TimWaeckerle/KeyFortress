@@ -15,22 +15,22 @@ import password.PasswordValidationException;
 
 public class PasswordEntry implements Password {
 
-	private byte[] password;
-	private byte[] salt;
-	private String key;
+	private final byte[] password;
+	private final byte[] salt;
+	private final String key;
 
 	public PasswordEntry(String password, PasswordRestriction restriction) throws Exception {
 		if (restriction.isValid()) {
 			this.salt = generateSalt(saltSize);
-			generatePassword(password);
+			this.key = generateRandomKey();
+			this.password = generatePassword(password);
 		} else {
 			throw new PasswordValidationException(ErrorMessages.PasswordEntriesMessage.getValue());
 		}
 	}
 
-	private void generatePassword(String password) throws Exception {
-		key = generateRandomKey();
-		this.password = encryptSymmetrical(password, key).getBytes();
+	private byte[] generatePassword(String password) throws Exception {
+		return encryptSymmetrical(password, key).getBytes();
 	}
 
 	public String getDecryptedPassword() throws Exception {
@@ -69,10 +69,6 @@ public class PasswordEntry implements Password {
 	@Override
 	public byte[] getPassword() {
 		return password;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
 	}
 
 	public String getClearPassword() {

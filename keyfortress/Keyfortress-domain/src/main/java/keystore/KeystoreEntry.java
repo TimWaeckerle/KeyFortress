@@ -1,9 +1,11 @@
 package keystore;
 
+import java.util.Objects;
+
 public class KeystoreEntry {
 
-	private String name;
-	private PasswordEntry password;
+	private final String name;
+	private final PasswordEntry password;
 
 	public KeystoreEntry(String name, PasswordEntry password) {
 		this.name = name;
@@ -14,15 +16,22 @@ public class KeystoreEntry {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public PasswordEntry getPassword() {
 		return password;
 	}
 
-	public void setPassword(PasswordEntry password) {
-		this.password = password;
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || getClass() != obj.getClass())
+			return false;
+		KeystoreEntry that = (KeystoreEntry) obj;
+		return Objects.equals(name, that.name) && Objects.equals(password, that.password);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, password);
 	}
 }
