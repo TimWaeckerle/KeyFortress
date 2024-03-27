@@ -72,14 +72,18 @@ public class KeystoreOverviewForm extends KeyFortressUI implements KeystoreOverv
 	}
 
 	private void handleKeystoreButtonClick(Keystore keystore) {
-		boolean verified = keystoreService.verifyPasswordForKeystore(keystore, askForPassword());
-		if (verified) {
-			KeystoreEntryForm keystoreForm = new KeystoreEntryForm();
-			keystoreForm.setKeystore(keystore);
-			keystoreForm.setKeystoreOverviewObservable(keystoreObservable);
-			keystoreForm.start(new Stage());
-		} else {
-			showAlert("Error", "Wrong Password");
+		try {
+			boolean verified = keystoreService.verifyPasswordForKeystore(keystore, askForPassword());
+			if (verified) {
+				KeystoreEntryForm keystoreForm = new KeystoreEntryForm();
+				keystoreForm.setKeystore(keystore);
+				keystoreForm.setKeystoreOverviewObservable(keystoreObservable);
+				keystoreForm.start(new Stage());
+			} else {
+				showAlert("Error", "Wrong Password");
+			}
+		} catch (Exception e) {
+			showAlert("Error", "Password can't be empty.");
 		}
 	}
 

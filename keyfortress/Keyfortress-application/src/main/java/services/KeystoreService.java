@@ -50,7 +50,7 @@ public class KeystoreService {
 		keystoreRepository.deleteKeystore(keystore.getKeystoreID());
 	}
 
-	public boolean verifyPasswordForKeystore(Keystore keystore, String password) {
+	public boolean verifyPasswordForKeystore(Keystore keystore, String password) throws Exception {
 		if (keystore != null) {
 			KeystorePassword enteredPassword = new KeystorePassword(password, keystore.getPassword().getSalt());
 			return keystore.getPassword().equals(enteredPassword);

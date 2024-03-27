@@ -12,8 +12,8 @@ import password.PasswordValidationException;
 
 public final class KeystorePassword implements Password {
 
-	private byte[] password;
-	private byte[] salt;
+	private final byte[] password;
+	private final byte[] salt;
 
 	public KeystorePassword(String password, PasswordRestriction restriction) throws PasswordValidationException {
 		if (restriction.isValid()) {
@@ -24,9 +24,9 @@ public final class KeystorePassword implements Password {
 		}
 	}
 
-	public KeystorePassword(String password, byte[] salt) {
+	public KeystorePassword(String password, byte[] salt) throws Exception {
 		if (password == null || salt == null) {
-			return;
+			throw new Exception("Password can't be empty");
 		}
 
 		this.salt = salt;
