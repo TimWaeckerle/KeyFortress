@@ -31,6 +31,11 @@ public class KeystoreEntryForm extends KeyFortressUI implements KeystoreEntryObs
 	private KeystoreOverviewObservable keystoreObservable;
 	private KeystoreService keystoreService;
 
+	public KeystoreEntryForm(KeystoreOverviewObservable keystoreObservable, Keystore keystore) {
+		this.keystore = keystore;
+		this.keystoreObservable = keystoreObservable;
+	}
+
 	@Override
 	public void start(Stage primaryStage) {
 		entryObservable = new KeystoreEntryObservable();
@@ -171,14 +176,6 @@ public class KeystoreEntryForm extends KeyFortressUI implements KeystoreEntryObs
 	private void handleDeleteEntryButtonClick(KeystoreEntry keystoreEntry) {
 		keystoreService.removeKeystoreEntry(keystore, keystoreEntry);
 		entryObservable.notifyObservers();
-	}
-
-	public void setKeystore(Keystore keystore) {
-		this.keystore = keystore;
-	}
-
-	public void setKeystoreOverviewObservable(KeystoreOverviewObservable keystoreObservable) {
-		this.keystoreObservable = keystoreObservable;
 	}
 
 	@Override

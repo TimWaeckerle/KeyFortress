@@ -22,6 +22,10 @@ public class AddKeystoreForm extends KeyFortressUI {
 	private Stage primaryStage;
 	private KeystoreOverviewObservable keystoreObservable;
 
+	public AddKeystoreForm(KeystoreOverviewObservable keystoreObservable) {
+		this.keystoreObservable = keystoreObservable;
+	}
+
 	@Override
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
@@ -77,15 +81,9 @@ public class AddKeystoreForm extends KeyFortressUI {
 	private void openKeystore(User user, Keystore keystore) {
 		Stage keystoreStage = new Stage();
 		keystoreStage.setTitle(user.getName());
-		KeystoreEntryForm keyStoreForm = new KeystoreEntryForm();
-		keyStoreForm.setKeystore(keystore);
-		keyStoreForm.setKeystoreOverviewObservable(keystoreObservable);
+		KeystoreEntryForm keyStoreForm = new KeystoreEntryForm(keystoreObservable, keystore);
 		keyStoreForm.start(keystoreStage);
 		keystoreObservable.notifyObservers();
 		keystoreStage.show();
-	}
-
-	public void setKeystoreOverviewObservable(KeystoreOverviewObservable keystoreObservable) {
-		this.keystoreObservable = keystoreObservable;
 	}
 }
