@@ -9,7 +9,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import keystore.Keystore;
-import observer.KeystoreOverviewObservable;
+import observer.KeystoreObservable;
 import password.PasswordValidationException;
 import persistence.FileSystemKeystoreRepository;
 import persistence.FileSystemUserRepository;
@@ -20,9 +20,9 @@ import user.User;
 public class AddKeystoreForm extends KeyFortressUI {
 
 	private Stage primaryStage;
-	private KeystoreOverviewObservable keystoreObservable;
+	private KeystoreObservable keystoreObservable;
 
-	public AddKeystoreForm(KeystoreOverviewObservable keystoreObservable) {
+	public AddKeystoreForm(KeystoreObservable keystoreObservable) {
 		this.keystoreObservable = keystoreObservable;
 	}
 

@@ -11,7 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import keystore.KeystoreEntry;
-import observer.KeystoreEntryObservable;
+import observer.KeystoreObservable;
 import persistence.FileSystemKeystoreRepository;
 import services.KeystoreService;
 
@@ -19,7 +19,7 @@ public class EditEntryForm extends KeyFortressUI {
 
 	private UUID keystoreID;
 	private KeystoreEntry keystoreEntry;
-	private KeystoreEntryObservable observable;
+	private KeystoreObservable observable;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -72,7 +72,7 @@ public class EditEntryForm extends KeyFortressUI {
 		this.keystoreID = keystoreID;
 	}
 
-	public void setObservable(KeystoreEntryObservable observable) {
+	public void setObservable(KeystoreObservable observable) {
 		this.observable = observable;
 	}
 }

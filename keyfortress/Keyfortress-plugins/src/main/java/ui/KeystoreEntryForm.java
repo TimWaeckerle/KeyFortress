@@ -17,28 +17,27 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import keystore.Keystore;
 import keystore.KeystoreEntry;
-import observer.KeystoreEntryObservable;
-import observer.KeystoreEntryObserver;
-import observer.KeystoreOverviewObservable;
+import observer.KeystoreObservable;
+import observer.KeystoreObserver;
 import persistence.FileSystemKeystoreRepository;
 import services.KeystoreService;
 
-public class KeystoreEntryForm extends KeyFortressUI implements KeystoreEntryObserver {
+public class KeystoreEntryForm extends KeyFortressUI implements KeystoreObserver {
 
 	private Keystore keystore;
 	private VBox vbox;
-	private KeystoreEntryObservable entryObservable;
-	private KeystoreOverviewObservable keystoreObservable;
+	private KeystoreObservable entryObservable;
+	private KeystoreObservable keystoreObservable;
 	private KeystoreService keystoreService;
 
-	public KeystoreEntryForm(KeystoreOverviewObservable keystoreObservable, Keystore keystore) {
+	public KeystoreEntryForm(KeystoreObservable keystoreObservable, Keystore keystore) {
 		this.keystore = keystore;
 		this.keystoreObservable = keystoreObservable;
 	}
 
 	@Override
 	public void start(Stage primaryStage) {
-		entryObservable = new KeystoreEntryObservable();
+		entryObservable = new KeystoreObservable();
 		entryObservable.addObserver(this);
 
 		keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
@@ -179,7 +178,7 @@ public class KeystoreEntryForm extends KeyFortressUI implements KeystoreEntryObs
 	}
 
 	@Override
-	public void onKeystoreEntryChange() {
+	public void onChange() {
 		loadKeystoreEntries();
 	}
 }

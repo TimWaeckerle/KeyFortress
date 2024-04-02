@@ -10,14 +10,14 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import observer.KeystoreEntryObservable;
+import observer.KeystoreObservable;
 import persistence.FileSystemKeystoreRepository;
 import services.KeystoreService;
 
 public class AddKeystoreEntryForm extends KeyFortressUI {
 
 	private UUID keystoreID;
-	private KeystoreEntryObservable observable;
+	private KeystoreObservable observable;
 
 	@Override
 	public void start(Stage primaryStage) {
@@ -64,7 +64,7 @@ public class AddKeystoreEntryForm extends KeyFortressUI {
 		this.keystoreID = keystoreID;
 	}
 
-	public void setObservable(KeystoreEntryObservable observable) {
+	public void setObservable(KeystoreObservable observable) {
 		this.observable = observable;
 	}
 }

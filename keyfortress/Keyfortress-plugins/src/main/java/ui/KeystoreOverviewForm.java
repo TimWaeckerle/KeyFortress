@@ -19,8 +19,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import keystore.Keystore;
-import observer.KeystoreOverviewObservable;
-import observer.KeystoreOverviewObserver;
+import observer.KeystoreObservable;
+import observer.KeystoreObserver;
 import password.strength.LengthPasswordEvaluationStrategy;
 import password.strength.NumericPasswordEvaluationStrategy;
 import password.strength.PasswordEvaluationStrategy;
@@ -33,16 +33,16 @@ import services.KeystoreService;
 import services.UserService;
 import user.User;
 
-public class KeystoreOverviewForm extends KeyFortressUI implements KeystoreOverviewObserver {
+public class KeystoreOverviewForm extends KeyFortressUI implements KeystoreObserver {
 
 	private UserService userService;
 	private KeystoreService keystoreService;
-	private KeystoreOverviewObservable keystoreObservable;
+	private KeystoreObservable keystoreObservable;
 	private VBox vbox;
 
 	@Override
 	public void start(Stage primaryStage) {
-		keystoreObservable = new KeystoreOverviewObservable();
+		keystoreObservable = new KeystoreObservable();
 		keystoreObservable.addObserver(this);
 		userService = new UserService(new FileSystemUserRepository());
 		keystoreService = new KeystoreService(new FileSystemKeystoreRepository());
@@ -175,7 +175,7 @@ public class KeystoreOverviewForm extends KeyFortressUI implements KeystoreOverv
 	}
 
 	@Override
-	public void onKeystoreChange() {
+	public void onChange() {
 		loadKeystores();
 	}
 }
