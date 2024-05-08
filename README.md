@@ -39,8 +39,10 @@ Make sure you remember your password! There is no way to access the keystore wit
 
 After you've created your keystore, two things happen:
 
-1. Change in Keystore Overview
+First Change in Keystore Overview
+
 You'll notice a change in your keystore overview.
+
 ![Keystore Overview](https://github.com/TimWaeckerle/KeyFortress/assets/97874901/187cb61f-b610-49aa-870a-136b8fc05457)
 
 Your newly created keystore will be visible in the view. Next to it, there's a label indicating how strong the passwords inside your keystore are overall.
@@ -50,7 +52,8 @@ Green means your passwords are safe. Yellow indicates your passwords are okay bu
 
 To enter an existing keystore, press the button of the keystore and type in the password. Afterwards, the Keystore view will be started.
 
-2. Keystore View
+Second Keystore View
+
 After creating a keystore, the keystore view will open automatically.
 
 ### Keystore View
@@ -66,6 +69,7 @@ Once you press the "Add Entry" button, another window will ask you to enter your
 There are no restrictions regarding length, numbers, or special characters. The only restriction is that both fields can't be empty.
 
 After you've created your entry, it will be shown inside the keystore view.
+
 ![Entry](https://github.com/TimWaeckerle/KeyFortress/assets/97874901/9e247032-fbfa-46d5-9fa5-d9468affdfd0)
 
 For each entry, you have three options: you can change the values of it via the "Edit" button or delete it via the "Delete" button.
