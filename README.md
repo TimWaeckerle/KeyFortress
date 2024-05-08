@@ -1,10 +1,10 @@
-# Password Manager
+# KeyFortress
 
-This is a simple password manager designed to help users securely manage their passwords. The program was developed using Java and JavaFX, providing a user-friendly interface for managing password keystores.
+Project for Advanced Software Engineering at DHBW Karlsruhe.
 
 ## Features
 
-- Adding, deleting, and editing password keystores
+- Adding, deleting, and editing passwords
 - Saving and encrypting passwords in keystores
 - Calculating password strength based on various criteria
 - Support for multiple users with separate keystores
@@ -70,11 +70,3 @@ After you've created your entry, it will be shown inside the keystore view.
 
 For each entry, you have three options: you can change the values of it via the "Edit" button or delete it via the "Delete" button.
 You are also able to copy the saved password to your clipboard via the "Copy Password" button.
-
-## Contributing
-
-Contributions are welcome! Feel free to fork the repository and submit pull requests to suggest improvements or new features.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
